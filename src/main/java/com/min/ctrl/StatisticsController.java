@@ -6,6 +6,7 @@ import com.min.service.IStatisticsService;
 import com.min.service.SubjectService;
 import com.min.vo.ClassVo;
 import com.min.vo.MemberVo;
+import net.sf.json.JSON;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -25,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping(value = "/user/*")
 public class StatisticsController {
 
     private static final Logger logger = LoggerFactory.getLogger(StatisticsController.class);
@@ -33,7 +33,7 @@ public class StatisticsController {
     private IStatisticsService service;
 
     //선호 조사시 과목코드를 가져오는 메소드
-    @RequestMapping(value = "/getSubjectList.do", method = RequestMethod.GET, produces = "application/text; charset=utf-8")
+    @RequestMapping(value = {"user/getSubjectList.do",}, method = RequestMethod.GET, produces = "application/text; charset=utf-8")
     @ResponseBody
     public String getSubject() {
         String res = service.selectSubjectCode();
@@ -41,8 +41,8 @@ public class StatisticsController {
     }
 
     //선호 조사 페이지
-    @RequestMapping(value = "/prefer.do", method = {RequestMethod.GET, RequestMethod.POST})
-    public String prefer(HttpServletRequest request, String time, String date, String[] subjects, Authentication authentication) {
+    @RequestMapping(value = "user/prefer.do", method = {RequestMethod.GET, RequestMethod.POST})
+    public String prefer(HttpServletRequest request, String time, String date, String[] subjects,String difficulty, Authentication authentication) {
 
         if (request.getMethod().equals("GET")) {
             logger.info("STAT_001_HJM StatisticsController prefer GET");
@@ -58,6 +58,7 @@ public class StatisticsController {
             obj.put("more_time", splitTime[0]);
             obj.put("less_time", splitTime[1]);
             obj.put("date", date);
+            obj.put("difficulty",difficulty);
 
             map.put("id", id);
             map.put("prefer", obj.toJSONString());
@@ -69,7 +70,7 @@ public class StatisticsController {
     }
 
     //좋아요 클릭 시
-    @RequestMapping(value = "/clickLike.do", method = RequestMethod.POST, produces = "application/text; charset=utf-8")
+    @RequestMapping(value = "user/clickLike.do", method = RequestMethod.POST, produces = "application/text; charset=utf-8")
     @ResponseBody
     public String clickLike(String claid, Authentication authentication) throws ParseException {
         String userid = (String) authentication.getPrincipal();
@@ -84,7 +85,7 @@ public class StatisticsController {
     }
 
     //내 좋아요 목록보기
-    @RequestMapping(value = "/myLikelist.do", method = RequestMethod.GET)
+    @RequestMapping(value = "user/myLikelist.do", method = RequestMethod.GET)
     public String myLikelist(Authentication authentication, Model model) throws ParseException {
         //TODO 좋아요를 누르면 세션에 있는 좋아요 리스트 값이 안바껴서 문제임
         MemberVo vo = (MemberVo) authentication.getDetails();
@@ -107,21 +108,20 @@ public class StatisticsController {
         return "user/myLikelist";
     }
 
-    @RequestMapping(value = "/classCheckList.do", method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "user/classCheckList.do", method = {RequestMethod.GET,RequestMethod.POST})
     public String classCheckList(@RequestParam Map<String,String> result, HttpServletRequest request,
-                                 Authentication authentication,String sub_num,Model model) throws ParseException {
+                                 Authentication authentication,Model model) throws ParseException {
         if(request.getMethod().equals("GET")){
             logger.info("StatisticsController classCheckList GET");
-            //TODO 과목 이름 주석 처리 해제
-            String title = service.selectSubjectTitle(sub_num);
+            String title = service.selectSubjectTitle(result.get("sub_num"));
             model.addAttribute("title",title);
-            model.addAttribute("sub_num",sub_num);
+            model.addAttribute("sub_num",result.get("sub_num"));
 
             return "/user/classCheckList";
         }else{
             //TODO 평가를 했던 회원과 강의를 듣지 않은 학생은 평가가 불가능 하도록 막기
             logger.info("StatisticsController classCheckList POST {}", result);
-            String score = service.selectSubjectScore(sub_num);
+            String score = service.selectSubjectScore(result.get("sub_num"));
             String id = (String)authentication.getPrincipal();
             //점수 넣기
             logger.info(score);
@@ -131,13 +131,15 @@ public class StatisticsController {
             JSONObject jsonScore = new JSONObject();
             jsonScore.put("id",id);
             jsonScore.putAll(result);
+            jsonScore.remove("sub_num");
             scoreArray.add(jsonScore);
             //점수 계산 하기
-            int communicationTotal = Integer.parseInt(jsonObject.get("communicationTotal")+result.get("communication"));
-            int curriculumTotal = Integer.parseInt(jsonObject.get("curriculumTotal")+result.get("curriculum"));
-            int bookTotal = Integer.parseInt(jsonObject.get("bookTotal")+result.get("book"));
-            int practiceTotal = Integer.parseInt(jsonObject.get("practiceTotal")+result.get("practice"));
-            int immersionTotal = Integer.parseInt(jsonObject.get("immersionTotal")+result.get("immersion"));
+            int communicationTotal = Integer.parseInt(jsonObject.get("communicationTotal").toString())+Integer.parseInt(result.get("communication"));
+            int curriculumTotal = Integer.parseInt(jsonObject.get("curriculumTotal").toString())+Integer.parseInt(result.get("curriculum"));
+            int bookTotal = Integer.parseInt(jsonObject.get("bookTotal").toString())+Integer.parseInt(result.get("book"));
+            int practiceTotal = Integer.parseInt(jsonObject.get("practiceTotal").toString())+Integer.parseInt(result.get("practice"));
+            int immersionTotal = Integer.parseInt(jsonObject.get("immersionTotal").toString())+Integer.parseInt(result.get("immersion"));
+
 
             jsonObject.replace("score",scoreArray);
             jsonObject.replace("communicationTotal",communicationTotal);
@@ -147,7 +149,7 @@ public class StatisticsController {
             jsonObject.replace("immersionTotal",immersionTotal);
 
             Map<String,Object> map = new HashMap<String,Object>();
-            map.put("id",sub_num);
+            map.put("id",result.get("sub_num"));
             map.put("score",jsonObject.toJSONString());
             service.updateSubjectScore(map);
 
@@ -155,4 +157,27 @@ public class StatisticsController {
         }
     }
 
+    @RequestMapping(value = "/subjectChart.do",method = RequestMethod.GET)
+    public String subjectChart(String sub_num, Model model){
+        model.addAttribute("sub_num",sub_num);
+        return "subjectChart";
+    }
+
+    @RequestMapping(value = "/getSubjectChart.do",method = RequestMethod.POST,produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String getSubjectChart(String sub_num) throws ParseException {
+        String score = service.selectSubjectScore(sub_num);
+        JSONParser parser = new JSONParser();
+        JSONObject scoreObject = (JSONObject) parser.parse(score);
+        JSONArray scoreArray = (JSONArray) scoreObject.get("score");
+        JSONObject result = new JSONObject();
+        int scoreSize = scoreArray.size();
+        result.put ("communicationTotal",(Integer.parseInt(scoreObject.get("communicationTotal").toString())*20)/scoreSize);
+        result.put ("curriculumTotal",(Integer.parseInt(scoreObject.get("curriculumTotal").toString())*20)/scoreSize);
+        result.put ("bookTotal",(Integer.parseInt(scoreObject.get("bookTotal").toString())*20)/scoreSize);
+        result.put ("practiceTotal",(Integer.parseInt(scoreObject.get("practiceTotal").toString())*20)/scoreSize);
+        result.put ("immersionTotal",(Integer.parseInt(scoreObject.get("immersionTotal").toString())*20)/scoreSize);
+
+        return result.toJSONString();
+    }
 }

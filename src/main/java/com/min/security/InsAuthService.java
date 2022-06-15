@@ -15,7 +15,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.min.service.IMemberService;
-import com.min.vo.InfoUser;
+import com.min.vo.CareerVo;
 import com.min.vo.MemberVo;
 
 
@@ -36,10 +36,12 @@ public class InsAuthService  implements AuthenticationProvider{
 		System.out.println("InsAuthService: id:{} , pwd:{} "+ username +"//"+ user_pw);
 		
 		MemberVo dto = new MemberVo();
-		
+		CareerVo cDto  = service.loginCar(map);
+		System.out.println(cDto.toString());
+
 		try{
 			 dto = service.loginIns(map);
-			 if ( dto.getAuth() == null || dto.getAuth() == ""  ) {
+			 if (dto.getAuth() == null ||dto.getAuth() == ""  ) {
 				throw new BadCredentialsException("Member 로그인 암호가 없습니다." + dto.getAuth() );
 				}
 			} catch (NullPointerException e){
@@ -72,17 +74,25 @@ public class InsAuthService  implements AuthenticationProvider{
 		user_info.setPhone(dto.getPhone());
 		user_info.setMilage(dto.getMilage());
 		user_info.setProfile(dto.getProfile());
+		user_info.setCareer(dto.getCareer());
 		user_info.setBank(dto.getBank());
 		user_info.setBanknum(dto.getBanknum());
 		user_info.setRegdate(dto.getRegdate());
 		user_info.setDelflag(dto.getDelflag());
+		user_info.setCar_depart(cDto.getCar_depart());
+		user_info.setCar_period(cDto.getCar_period());
+		user_info.setCar_file(cDto.getCar_file());
+		user_info.setCar_position(cDto.getCar_position());
+		user_info.setCar_content(cDto.getCar_content());
+		
         // 반환할 값을 만든다.
         UsernamePasswordAuthenticationToken result 
         	= new UsernamePasswordAuthenticationToken(username, user_pw, roles);
         
         // 로그인한 사용자의 정보를 detail 에 넣어준다.
         result.setDetails(user_info);
-        
+      
+       
 		return result;
 	}
 

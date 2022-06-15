@@ -55,9 +55,13 @@ function preferCheck(){
     var cnt = document.getElementsByClassName("subName");
     var time = $("#time option:selected").val();
     var date = $("#date option:selected").val();
+    var difficulty = $("#difficulty option:selected").val();
+    if(difficulty==0){
+        alert("선호하는 난이도를 선택해 주세요");
+        return false;
+    }
     if(cnt.length<3){
-        alert("원하시는 과목을 3개이상 선택해주세요");
-        console.log(cnt.length);
+        alert("선호하는 과목을 3개이상 선택해주세요");
         return false;
     }
     if(time==0){

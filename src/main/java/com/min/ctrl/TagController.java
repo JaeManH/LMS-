@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @Controller
-@RequestMapping(value = "/user/*")
 public class TagController {
 
     private static final Logger logger = LoggerFactory.getLogger(TagController.class);
@@ -35,21 +34,21 @@ public class TagController {
 
     public static final Pattern TAG_REGEX = Pattern.compile("#([a-zA-Z0-9가-힣]*)");
 
-    @RequestMapping(value = "/tag.do", method = RequestMethod.GET)
+    @RequestMapping(value = "*/tag.do", method = RequestMethod.GET)
     public String tagPage(String tag) {
 
         return "tag";
     }
 
 
-    @RequestMapping(value = "/getTags.do", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "*/getTags.do", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String getTags() {
         String tags = tagService.selectTagAll();
         return tags;
     }
 
-    @RequestMapping(value = "/searchTag.do", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @RequestMapping(value = "*/searchTag.do", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String searchTag(String tag, String category) throws ParseException {
         JSONParser parser = new JSONParser();

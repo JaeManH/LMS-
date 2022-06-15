@@ -53,7 +53,7 @@
               <div class="row">
                 <!-- user profile header start-->
                 <div class="col-sm-12">
-                  <div class="card profile-header"><img class="img-fluid bg-img-cover" src="../assets/images/user-profile/bg-profile.jpg" alt="">
+                  <div class="card profile-header"><img class="img-fluid bg-img-cover" src="../assets/images/user-profile/test1.jpg" alt="">
                     <div class="profile-img-wrrap"><img class="img-fluid bg-img-cover" src="../assets/images/user-profile/bg-profile.jpg" alt=""></div>
                     <!-- 배경안에 박스 -->
                     <div class="userpro-box">
@@ -180,27 +180,8 @@
                         <div class="card">
                           <div class="card-header">
                             <h5 class="p-0">
-                              <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon11" aria-expanded="true" aria-controls="collapseicon11">Followings</button>
+                              <a href="./myLikelist.do">내 좋아요 목록</a>
                             </h5>
-                          </div>
-                          <div class="collapse show" id="collapseicon11" aria-labelledby="collapseicon11" data-parent="#accordion">
-                            <div class="card-body social-list filter-cards-view">
-                              <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/3.png">
-                                <div class="media-body"><span class="d-block">Sarah Loren</span><a href="javascript:void(0)">Add Friend</a></div>
-                              </div>
-                              <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/2.png">
-                                <div class="media-body"><span class="d-block">Bucky Barnes</span><a href="javascript:void(0)">Add Friend</a></div>
-                              </div>
-                              <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/10.jpg">
-                                <div class="media-body"><span class="d-block">Comeren Diaz</span><a href="javascript:void(0)">Add Friend</a></div>
-                              </div>
-                              <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/3.jpg">
-                                <div class="media-body"><span class="d-block">Jason Borne</span><a href="javascript:void(0)">Add Friend</a></div>
-                              </div>
-                              <div class="media"><img class="img-50 img-fluid m-r-20 rounded-circle" alt="" src="../assets/images/user/11.png">
-                                <div class="media-body"><span class="d-block">Andew Jon</span><a href="javascript:void(0)">Add Friend</a></div>
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -208,38 +189,8 @@
                         <div class="card">
                           <div class="card-header">
                             <h5 class="p-0">
-                              <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon4" aria-expanded="true" aria-controls="collapseicon4">Latest Photos</button>
+                              <a href="./prefer.do">선호조건 바꾸기</a>
                             </h5>
-                          </div>
-                          <div class="collapse show" id="collapseicon4" data-parent="#accordion" aria-labelledby="collapseicon4">
-                            <div class="card-body photos filter-cards-view">
-                              <ul>
-                                <li>
-                                  <div class="latest-post"><img class="img-fluid" alt="" src="../assets/images/social-app/post-1.png"></div>
-                                </li>
-                                <li>
-                                  <div class="latest-post"><img class="img-fluid" alt="" src="../assets/images/social-app/post-2.png"></div>
-                                </li>
-                                <li>
-                                  <div class="latest-post"><img class="img-fluid" alt="" src="../assets/images/social-app/post-3.png"></div>
-                                </li>
-                                <li>
-                                  <div class="latest-post"><img class="img-fluid" alt="" src="../assets/images/social-app/post-4.png"></div>
-                                </li>
-                                <li>
-                                  <div class="latest-post"><img class="img-fluid" alt="" src="../assets/images/social-app/post-5.png"></div>
-                                </li>
-                                <li>
-                                  <div class="latest-post"><img class="img-fluid" alt="" src="../assets/images/social-app/post-6.png"></div>
-                                </li>
-                                <li>
-                                  <div class="latest-post"><img class="img-fluid" alt="" src="../assets/images/social-app/post-7.png"></div>
-                                </li>
-                                <li>
-                                  <div class="latest-post"><img class="img-fluid" alt="" src="../assets/images/social-app/post-8.png"></div>
-                                </li>
-                              </ul>
-                            </div>
                           </div>
                         </div>
                       </div>

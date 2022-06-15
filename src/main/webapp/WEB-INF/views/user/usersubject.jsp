@@ -64,7 +64,7 @@
                         </tr>
                       </thead>
     				<tbody>
-    					<jsp:useBean id="subjectList" class="com.min.coolSMS.bean.SubjectListBeanAdmin" scope="page"/>
+    					<jsp:useBean id="subjectList" class="com.min.bean.SubjectListBeanAdmin" scope="page"/>
     					<jsp:setProperty property="lists" name="subjectList" value="${lists}"/>
     					<jsp:setProperty property="mem" name="subjectList" value="${mem}"/>
     					<jsp:getProperty property="listForm" name="subjectList"/>

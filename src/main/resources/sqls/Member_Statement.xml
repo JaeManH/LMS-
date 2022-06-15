@@ -10,9 +10,10 @@
 	<result column="Tra_birth" property="birth" />		
 	<result column="Tra_phone" property="phone" />		
 	<result column="Tra_auth" property="auth" />		
-	<result column="Tra_like" property="like" />
-	<result column="Tra_prefer" property="prefer" />
-	<result column="Tra_profile" property="profile" />
+	<result column="Tra_profile" property="profile" />		
+	<result column="Tra_like" property="like" />		
+	<result column="Tra_milage" property="milage" />		
+	<result column="Tra_prefer" property="prefer" />		
 	<result column="Tra_delflag" property="delflag" />		
 	<result column="Tra_regdate" property="regdate" />				
 </resultMap>
@@ -25,9 +26,11 @@
 	<result column="Ins_birth" property="birth" />		
 	<result column="Ins_phone" property="phone" />		
 	<result column="Ins_auth" property="auth" />	
+	<result column="Ins_career" property="career" />	
 	<result column="Ins_bank" property="bank" />
 	<result column="Ins_banknum" property="banknum" />					
-	<result column="Ins_profile" property="profile" />		
+	<result column="Ins_profile" property="profile" />	
+	<result column="Ins_milage" property="milage" />		
 	<result column="Ins_delflag" property="delflag" />		
 	<result column="Ins_regdate" property="regdate" />				
 </resultMap>
@@ -43,17 +46,18 @@ SELECT  TRA_ID ,
 		TRA_PHONE ,
 		TRA_BIRTH ,
 		TRA_PROFILE ,
-		TRA_AUTH ,
+		TRA_AUTH,
+		TRA_MILAGE ,
 		JSON_QUERY(TRA_LIKE,'$' RETURNING VARCHAR2) AS TRA_LIKE,
 		JSON_QUERY(TRA_PREFER,'$' RETURNING VARCHAR2) AS TRA_PREFER,
 		TRA_REGDATE ,
 		TRA_DELFLAG 
 	FROM TRAINEE 
 		WHERE TRA_ID=#{id}
-		AND TRA_DELFLAG ='N'
+		AND TRA_DELFLAG IN ('N','W')
 </select>
 <!-- 일반회원 회원가입 -->
-<insert id="traSignUp"  parameterType="map" >
+<insert id="traSignUp"  parameterType="map">
 INSERT INTO TRAINEE
 (TRA_ID,
 TRA_PW,
@@ -61,28 +65,53 @@ TRA_NAME,
 TRA_EMAIL,
 TRA_PHONE, 
 TRA_BIRTH,
-TRA_PROFILE,
+TRA_MILAGE,
 TRA_AUTH,
 TRA_REGDATE, 
 TRA_DELFLAG,
  TRA_PREFER)
 VALUES(#{id},#{pw}, #{name}, 
 #{email}, #{phone}, 
-#{birth}, #{profile}, 'ROLE_USER', 
+#{birth}, 1000, 'ROLE_USER', 
 SYSDATE,
 'N','{"subject":[],"more_time":null,"less_time":null,"date":null,"recommand":[]}')
 </insert>
-<select id="findTraId">
-SELECT TRA_ID  FROM 
+<!-- 일반회원 개인정보 수정 -->
+<update id="updateTra"  parameterType="map">
+UPDATE TRAINEE
+SET
+TRA_PW=#{pw}, 
+TRA_EMAIL=#{email}, 
+TRA_PHONE=#{phone}, 
+TRA_BIRTH=#{birth},  
+TRA_REGDATE=SYSDATE
+WHERE TRA_ID=#{id}
+</update>
+<!-- 일반회원 프로필 변경 -->
+<update id="updateProfile" parameterType="map">
+UPDATE TRAINEE SET
+TRA_PROFILE = #{profile}
+WHERE TRA_ID=#{id}
+</update>
+
+<!-- 일반회원 아이디 찾기 -->
+<select id="findTraId"  resultMap="TraResult" parameterType="map" resultType="MemberVo">
+SELECT SUBSTR(TRA_ID,1,LENGTH(TRA_ID)-2)||LPAD('*',2,'*') AS TRA_ID
+FROM 
 TRAINEE 
 WHERE TRA_NAME  =#{name} 
-AND TRA_EMAIL =#{email};
+AND TRA_EMAIL =#{email}
 </select>
+<!-- 일반회원 아이디 중복체크 -->
+<select id="checkTraId"  parameterType="String" resultType="Integer">
+SELECT COUNT(*) FROM TRAINEE WHERE TRA_ID = #{id}
+</select>
+
 
 
 <!-- 회원 탈퇴 신청 (W = 탈퇴 승인 대기) -->
 <update id="delTra" parameterType="map">
-UPDATE TRAINEE SET TRA_DELFLAG ='W'
+UPDATE TRAINEE SET TRA_DELFLAG ='Y'
 WHERE TRA_ID =#{id}
 </update>
 
@@ -106,35 +135,34 @@ SELECT  RN, TRA_ID ,
 		TRA_REGDATE ,
 		TRA_DELFLAG 
 		FROM TRAINEE t 
-		WHERE  TRA_DELFLAG ='N')
+		WHERE  TRA_DELFLAG = ('N','W'))
 			WHERE RN BETWEEN #{start} AND #{last}
 </select>
 <select id="adminUserListTotal" resultType="Integer">
 	SELECT COUNT(*) FROM TRAINEE s
-	WHERE TRA_DELFLAG = 'N'
+	WHERE TRA_DELFLAG = ('N','W')
 </select>
 
 
 
 <!-- 강사 로그인 -->
 <select id="loginIns" resultMap="InsResult" parameterType="map" resultType="MemberVo">
-SELECT INS_ID,  
-INS_NAME, 
-INS_PW,
-INS_EMAIL, 
-INS_PHONE, 
-INS_BIRTH, 
-INS_PROFILE, 
-INS_AUTH,  
-INS_RATING, 
-INS_CARRER, 
-INS_BANKNUM, 
-INS_BANK, 
-INS_REGDATE, 
-INS_DELFLAG FROM INSTRUCTOR 
+SELECT INS_ID,  INS_NAME, INS_PW,
+INS_EMAIL, INS_PHONE, INS_BIRTH, 
+INS_PROFILE, INS_AUTH,  INS_RATING, 
+INS_CAREER, INS_MILAGE,INS_BANKNUM, 
+INS_BANK, INS_REGDATE, INS_DELFLAG
+ FROM INSTRUCTOR 
 WHERE INS_ID =#{id}
-	AND INS_DELFLAG = 'N'
+	AND INS_DELFLAG IN ('N','P','R','C')
 </select>
+
+<select id="LoginCar" parameterType="map" resultType="CareerVo">
+SELECT CAR_SEQ, CAR_INS_ID, CAR_FILE, CAR_DEPART, CAR_POSITION, CAR_PERIOD, CAR_CONTENT
+FROM CAREER
+WHERE CAR_INS_ID = #{id}
+</select>
+
 <!-- 강사 회원가입 -->
 <insert id="InsSignUp"  parameterType="map">
 INSERT INTO INSTRUCTOR
@@ -144,7 +172,7 @@ INS_NAME,
 INS_EMAIL,
 INS_PHONE,
 INS_BIRTH,
-INS_PROFILE,
+INS_MILAGE,
 INS_AUTH,
 INS_REGDATE,
 INS_BANKNUM, 
@@ -152,11 +180,103 @@ INS_BANK,
 INS_DELFLAG)
 VALUES(#{id},#{pw}, #{name}, 
 #{email}, #{phone}, 
-#{birth}, #{profile}, 'ROLE_INSTROCTUR', 
+#{birth}, '1000', 'ROLE_INSTROCTUR', 
 SYSDATE,
 #{banknum},#{bank},
-'N')
+'P')
 </insert>
+
+<!-- 강사 경력 등록 -->
+<!-- <insert id="insertCar" parameterType="map"> -->
+<!-- INSERT INTO CAREER -->
+<!-- (CAR_SEQ,CAR_INS_ID, CAR_FILE, CAR_DEPART, CAR_POSITION, CAR_PERIOD, CAR_CONTENT) -->
+<!-- VALUES('INS'||CAR_SEQ.NEXTVAL,#{car_ins_id}, #{car_file}, #{car_depart}, #{car_position}, #{daterange}, #{car_content}) -->
+<!-- </insert> -->
+
+<!-- 강사 경력 등록 -->
+<insert id="insertCar" parameterType="map">
+INSERT INTO CAREER
+(CAR_SEQ,CAR_INS_ID, CAR_FILE, CAR_DEPART, CAR_POSITION, CAR_PERIOD, CAR_CONTENT)
+VALUES('INS'||CAR_SEQ.NEXTVAL,#{id}, 'UN', 'UN', 'UN', 'UN', 'UN')
+</insert>
+
+<!-- 강사 경력 등록 -->
+<update id="updateCar" parameterType="map">
+UPDATE CAREER SET
+CAR_FILE = #{car_file},
+CAR_DEPART = #{car_depart},
+CAR_POSITION = #{car_position},
+CAR_PERIOD = #{daterange},
+CAR_CONTENT = #{car_content}
+WHERE CAR_SEQ = #{car_seq}
+</update>
+<!--경력 등록 시 경력대기중 상태변경 -->
+<update id="updateCarDelflag" parameterType="map">
+UPDATE INSTRUCTOR
+SET
+INS_DELFLAG='R'
+WHERE INS_ID=#{id}
+</update>
+
+
+<!-- 강사 경력코드 추가 -->
+<update id="insCarUpdate" parameterType="map">
+UPDATE INSTRUCTOR SET INS_CAREER = (SELECT CAR_SEQ FROM CAREER  WHERE CAR_INS_ID = #{id} ) 
+						WHERE INS_ID = #{id}
+</update>
+
+<!-- 일반회원 아이디 중복체크 -->
+<select id="checkInsId"  parameterType="String" resultType="Integer">
+SELECT COUNT(*) FROM INSTRUCTOR WHERE INS_ID = #{id}
+</select>
+
+
+
+
+<!-- 강사 개인정보 수정 -->
+<update id="updateIns"  parameterType="map">
+UPDATE INSTRUCTOR
+SET
+INS_PW=#{pw}, 
+INS_EMAIL=#{email}, 
+INS_PHONE=#{phone}, 
+INS_BIRTH=#{birth},  
+INS_BANKNUM=#{banknum}, 
+INS_BANK=#{bank}, 
+INS_REGDATE=SYSDATE, 
+WHERE INS_ID=#{id}
+</update>
+
+
+
+
+<select id="findInsId"  resultMap="InsResult" parameterType="map" resultType="MemberVo">
+SELECT SUBSTR(INS_ID,1,LENGTH(INS_ID)-2)||LPAD('*',2,'*') 
+FROM 
+INSTRUCTOR 
+WHERE INS_NAME  =#{name} 
+AND INS_EMAIL =#{email}
+</select>
+
+<!-- 강사 회원 탈퇴  -->
+<update id="delIns" parameterType="map">
+UPDATE INSTRUCTOR SET INS_DELFLAG ='Y'
+WHERE INS_ID =#{id}
+</update>
+
+<!-- 강사 경력 승인 (R = 탈퇴 승인 대기) -->
+<update id="CarR" parameterType="map">
+UPDATE INSTRUCTOR SET INS_DELFLAG ='N'
+WHERE INS_ID =#{id}
+</update>
+
+<!-- 강사 경력 취소  -->
+<update id="CarC" parameterType="map">
+UPDATE INSTRUCTOR SET INS_DELFLAG ='C'
+WHERE INS_ID =#{id}
+</update>
+
+
 
 <update id="insUpdatePw">
 UPDATE INSTRUCTOR SET
@@ -165,8 +285,9 @@ WHERE INS_ID =#{id} AND
 	  INS_NAME=#{name} AND 
 	  INS_EMAIL=#{email} 
 </update>
+
 <!-- 관리자 회원 탈퇴 승인(Y = 탈퇴) -->
-<update id="adminDelTra">
+<update id="adminDelTra" parameterType="map">
 UPDATE TRAINEE SET TRA_DELFLAG ='Y'
 WHERE TRA_ID =#{id}
 </update>

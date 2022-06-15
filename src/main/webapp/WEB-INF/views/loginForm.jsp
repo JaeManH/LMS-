@@ -21,24 +21,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
     <!-- Font Awesome-->
-    <link rel="stylesheet" type="text/css" href="./assets/css/fontawesome.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/fontawesome.css">
     <!-- ico-font-->
-    <link rel="stylesheet" type="text/css" href="./assets/css/icofont.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/icofont.css">
     <!-- Themify icon-->
-    <link rel="stylesheet" type="text/css" href="./assets/css/themify.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/themify.css">
     <!-- Flag icon-->
-    <link rel="stylesheet" type="text/css" href="./assets/css/flag-icon.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/flag-icon.css">
     <!-- Feather icon-->
-    <link rel="stylesheet" type="text/css" href="./assets/css/feather-icon.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/feather-icon.css">
     <!-- Plugins css start-->
     <!-- Plugins css Ends-->
     <!-- Bootstrap css-->
-    <link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.css">
     <!-- App css-->
-    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
     <link id="color" rel="stylesheet" href="./assets/css/color-1.css" media="screen">
     <!-- Responsive css-->
-    <link rel="stylesheet" type="text/css" href="./assets/css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="../assets/css/responsive.css">
 <!-- <script type="text/javascript"> 
  	function loginCheck(){
  		console.log('로그인 작동합니다');
@@ -81,6 +81,59 @@
  		}
  	}
  </script> -->
+ <style type="text/css">
+ body {
+  margin: 0;
+  padding: 0;
+}
+
+.btns {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 20px;
+  background: white;
+  font-size: 28px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  transition: all 1s;
+}
+.btns:after, .btns:before {
+  content: " ";
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  border: 0px solid #fff;
+  transition: all 1s;
+}
+.btns:after {
+  top: -1px;
+  left: -1px;
+  border-top: 5px solid #76cdbc;
+  border-left: 5px solid #76cdbc;
+}
+.btns:before {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 5px solid #76cdbc;
+  border-right: 5px solid #76cdbc;
+}
+.btns:hover {
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+.btns:hover:before, .btns:hover:after {
+  width: 100%;
+  height: 100%;
+}
+
+.data-container {
+  background: #ffebee;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+ </style>
 </head>
 <body>
  <!-- Loader starts-->
@@ -92,66 +145,74 @@
     <!-- Loader ends-->
     <!-- page-wrapper Start-->
     
-    <section>    
-          <div id="demo1"><a href="./ins/loginPage.do" class="btn btn-success btn-lg btn-block">
-          <span class="icofont icofont-support"></span> 강사 로그인</a>
-              <a href="./user/loginPage.do" class="btn btn-success btn-lg btn-block">
-               
-              <span class="icofont icofont-support"></span> 일반회원 로그인</a></div>
-      <div class="container-fluid p-0">
- 
-   <h3>  <p><a class="ms-2" href="./">메인으로</a></p></h3>
-     <sec:authorize access="isAuthenticated()">
-     <h3><p><a class="ms-2" href="./main.do">메인으로</a></p></h3>
-     </sec:authorize>
-       <input class="btn btn-warning btn-block btn-lg" type="button" value="뒤로가기" onclick="history.back(-1)">
-        <div class="row">
-          <div class="col-12">
+
+    </section>
+      <section>         
+      <div class="container-fluid p-0"> 
+        <div class="row m-0">
+          <div class=" col-12 p-2">    
             <div class="login-card">
-               <div id="accordion" class="default-according">
-<div class="card">
-<div class="card-header" id="headingOne">
-<h5 class="mb-0">
-<button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true"      aria-controls="collapseOne">
-Collapsible Group Item #
-                              <span class="digits">1</span>
-</button>
-</h5>
-</div>
-<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-bs-parent="#accordion">
-<div class="card-body">
-Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch.Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et.
-</div>
-</div>
-</div>
-<div class="card">
-...
-</div>
-<div class="card">
-...
-</div>
-</div>
+              <div class="login-main"> 
+              <div class="card-body megaoptions-border-space-sm">
+                    <form class="mega-inline">
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <div class="card">
+                            <a href="../ins/loginPage.do">
+                            <div class="media p-20 btns">
+                              <div class="media-body">
+                                <h6 class="mt-0 mega-title-badge">Instructor<span class="badge badge-primary pull-right digits">ins</span></h6>
+                                <h2>강사  로그인</h2>
+                              </div>
+                            </div>
+                            </a>
+                          </div>
+                        </div>
+                        <div class="col-sm-12">
+                          <div class="card">
+                           <a href="../user/loginPage.do">
+                            <div class="media p-20 btns">
+                              <div class="media-body">
+                                <h6 class="mt-0 mega-title-badge">Trainee<span class="badge badge-secondary pull-right digits">Tra</span></h6>
+                                <h2>일반회원 로그인</h2>
+                              </div>
+                            </div>
+                            </a>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </form>
+                   
+                  </div>
+                  <div>
+                  
+                  <input class="btn btn-warning btn-block btn-xs " type="button" style="margin: 20px;" value="뒤로가기" onclick="history.back(-1)">
+               </div>
+              </div>
+              
             </div>
           </div>
+          
         </div>
       </div>
     </section>
     <!-- page-wrapper end-->
     <!-- latest jquery-->
-    <script src="./assets/js/jquery-3.5.1.min.js"></script>
+    <script src="../assets/js/jquery-3.5.1.min.js"></script>
     <!-- feather icon js-->
-    <script src="./assets/js/icons/feather-icon/feather.min.js"></script>
-    <script src="./assets/js/icons/feather-icon/feather-icon.js"></script>
+    <script src="../assets/js/icons/feather-icon/feather.min.js"></script>
+    <script src="../assets/js/icons/feather-icon/feather-icon.js"></script>
     <!-- Sidebar jquery-->
-    <script src="./assets/js/sidebar-menu.js"></script>
-    <script src="./assets/js/config.js"></script>
+    <script src="../assets/js/sidebar-menu.js"></script>
+    <script src="../assets/js/config.js"></script>
     <!-- Bootstrap js-->
-    <script src="./assets/js/bootstrap/popper.min.js"></script>
-    <script src="./assets/js/bootstrap/bootstrap.min.js"></script>
+    <script src="../assets/js/bootstrap/popper.min.js"></script>
+    <script src="../assets/js/bootstrap/bootstrap.min.js"></script>
     <!-- Plugins JS start-->
     <!-- Plugins JS Ends-->
     <!-- Theme js-->
-    <script src="./assets/js/script.js"></script>
+    <script src="../assets/js/script.js"></script>
     <!-- login js-->
     <!-- Plugin used-->
 </body>

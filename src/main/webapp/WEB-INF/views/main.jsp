@@ -6,10 +6,11 @@
 <html>
 <head>
     <title>첫 페이지</title>
+       <link rel="stylesheet" type="text/css" href="../assets/css/sweetalert2.css">
 </head>
+<%-- <jsp:forward page="main.do"/> --%>
 <%@ include file="./header.jsp" %>
 <body>
-
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-header">
@@ -17,6 +18,10 @@
     </div>
     <!-- Container-fluid starts-->
     <div class="container-fluid">
+    <!-- 시큐리티 권한 가져오는 부분 삭제 금지 -->
+     <sec:authorize access="isAuthenticated()">
+    	<sec:authentication property="Details" var="info" />
+    	</sec:authorize>
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -49,7 +54,7 @@
                                 <div class="card">
                                     <div class="product-box learning-box">
                                         <div class="product-img"><img class="img-fluid top-radius-blog"
-                                                                      src="../resources/images/main01.jpeg.jpg" alt="">
+                                                                      src="../resources/images/main01.jpg" alt="">
                                             <div class="product-hover">
                                                 <ul>
                                                     <li><a href="learning-detailed.html"><i class="icon-link"></i></a>
@@ -145,12 +150,17 @@
 				                    </div>
 				                  </div>
 				                  <div class="card-body">
-				                    <p>“처음부터 다 이해하고 잘 할 수 있는 일은 없습니다.”<br>
+				                    <p style="display: inline-block; width: 400px">“처음부터 다 이해하고 잘 할 수 있는 일은 없습니다.”<br>
 										IT를 몰라서 SW 개발을 해본 적이 없어서..’ 이러한 두려운 마음은 열정과 자신감만 있다면 못할 일이 없습니다.
 										풀리지 않는 문제는 없습니다.
 										취업을 위한 가장 중요한 시기에 SW분야의 정확한 기술과 경험을 전수하고
 										난해한 문제점을 같이 고민하고 풀어가겠습니다.
 										목표한 곳까지의 “페이스메이커”가 되어 끝까지 함께 하겠습니다.</p>
+                                      <div style="width: 250px; height: 220px;float: right; margin-top: -40px">
+                                          <input type="hidden" id="subNum" value="20220523SUB101">
+                                          <canvas id="myChart"></canvas>
+                                      </div>
+
 				                  </div>
 				                </div>
 				              </div>
@@ -172,14 +182,18 @@
 				                    </div>
 				                  </div>
 				                  <div class="card-body">
-				                    <p>“여러분과 좋은 인연을 맺고 싶습니다.”<br>
-										"관심"이 인생의 전부는 아니지만 현재 여러분의 "취업"이었으면 좋겠습니다.
-										모든 일은 "취업"에서부터 시작됩니다.<br><br>
+				                    <p style="display: inline-block; width: 400px">“여러분과 좋은 인연을 맺고 싶습니다.”<br>
+										"취업"이 인생의 전부는 아니지만 현재 여러분의 "관심"이었으면 좋겠습니다.
+										모든 일은 "관심"에서부터 시작됩니다.<br><br>
 										저도 여러분을 "관심"있게 지켜볼 수 있도록 힘내겠습니다 :)</p>
+                                      <div style="width: 250px; height: 220px;float: right; margin-top: -40px">
+                                          <input type="hidden" id="subNum2" value="20220523SUB101">
+                                          <canvas id="myChart2"></canvas>
+                                      </div>
 				                  </div>
 				                </div>
 				              </div>
-			             </div> 
+			             </div>
                     </div>
                 </div>
             </div>
@@ -194,7 +208,140 @@
 
 
 <%@include file="./footer.jsp" %>
+</div>
+</div>
+<script type="text/javascript">
+// window.onbeforeunload = function(e) {
+//     var dialogText = 'Dialog text here';
+//     e.returnValue = dialogText;
+//     return dialogText;
+// };
+window.onload = function() {
+	
+	var auth   = '${info.auth}'
+    var delflag   = '${info.delflag}'
+	console.log(delflag , auth);
+	if(auth == "ROLE_INSTROCTUR" && delflag =="P"){
+		Swal.fire({
+			  title: '경력 등록',
+			  text: "서비스를 이용하시려면 경력등록이 필요합니다!",
+			  icon: 'warning',
+			  showCancelButton: true,
+			  confirmButtonColor: '#3db39d',
+			  cancelButtonColor: '#e4818b',
+			  cancelButtonText: '취소',
+			  confirmButtonText: '등록하기!'
+			}).then((result) => {
+			  if (result.value) {
+				  window.location='./InsCareer.do';
+			  
+			  }
+			})
+			}else if(auth == "ROLE_INSTROCTUR" && delflag =="R"){
+				Swal.fire({
+					  title: '경력 등록 대기중',
+					  text: "경력 등록 진행 중 입니다.!",
+					  icon: 'warning',
+					  showCancelButton: true,
+					  confirmButtonColor: '#3db39d',
+					  cancelButtonColor: '#e4818b',
+					  cancelButtonText: '취소',
+					  confirmButtonText: '등록하기!'
+					}).then((result) => {
+					  if (result.value) {
+						  window.location='./myProfile.do';
+					  
+					  }
+					})
+			}else if(auth == "ROLE_INSTROCTUR" && delflag =="C"){
+				Swal.fire({
+					  title: '경력 승인 취소',
+					  text: "경력 등록이 취소되었습니다. 다시 등록해주세요.!",
+					  icon: 'warning',
+					  showCancelButton: true,
+					  confirmButtonColor: '#3db39d',
+					  cancelButtonColor: '#e4818b',
+					  cancelButtonText: '취소',
+					  confirmButtonText: '등록하기!'
+					}).then((result) => {
+					  if (result.value) {
+						  window.location='./InsCareer.do';
+					  
+					  }
+					})
+			}
+			};
+var data = {
+    labels: [
+        '소통',
+        '커리큘럼',
+        '교재와 자료',
+        '실습',
+        '몰입도'
+    ],
+    datasets: [{
+        label: '전민균 강사님',
+        data: [100, 100, 100 , 100, 100 ],
+        fill: true,
+        backgroundColor: 'rgba(36, 105, 92, 0.2)',
+        borderColor: 'rgb(36, 105, 92)',
+        pointBackgroundColor: 'rgb(36, 105, 92)',
+        pointBorderColor: 'rgb(36, 105, 92)',
+        pointHoverBackgroundColor: 'rgb(36, 105, 92)',
+        pointHoverBorderColor: 'rgb(36, 105, 92)',
+        borderWidth: 1,
+        pointBorderWidth: 0
+    }]
+}
+const config = {
+    type: 'radar',
+    data: data,
+    options: {
+        elements: {
+            line: {
+                borderWidth: 2
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
 
+        },
+        scales: {
+            r: {
+                min: 0,
+                max: 100,
+                pointLabels: {
+                    display: true,
+                    font: {
+                        size: 10
+                    }
+                }
+            }
+        },
+        ticks: {
+            maxTicksLimit: 5
+        }, layout: {
+            padding: {
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 20
+            }
+        }
+    }
+}
+const myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+);
+const myChart2 = new Chart(
+    document.getElementById('myChart2'),
+    config
+);
 
+</script>
+  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 </body>
 </html>

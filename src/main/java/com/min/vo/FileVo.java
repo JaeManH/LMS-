@@ -25,5 +25,16 @@ public class FileVo {
 	private String uuid;
 	private boolean image;
 	private String regdate;
+	
+	
+	private int file_seq;
+	private int demoboard_seq;
+	private String original_file_name;
+	private String stored_file_name;
+	private String file_path;
+	private boolean file_type;
+	
+	
 
 }
+
