@@ -18,4 +18,6 @@ public interface ITagService {
 
     public String selectTagSubjectCode(String code);
 
+    public List<String> selectTagClassSubject(String cla_num);
+
 }
