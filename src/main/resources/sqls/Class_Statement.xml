@@ -23,11 +23,11 @@ SELECT SUBSTR(CLA_NUM,4)+0 AS CLA_NUM , CLA_TITLE , CASE WHEN LENGTH(CLA_CONTENT
 	ORDER BY CLA_NUM
 </select>
 
-<!-- 과정 상세 조회 -->
+<!-- 과정 상세 조회 [과정 가격가져가서 결제]-->
 <select id="classSelectDetail" resultType="ClassVo" parameterType="ClassVo">
 SELECT CLA_NUM, CLA_TITLE , CLA_CONTENT , CLA_MAXPEO , CLA_PRICE , CLA_DAILYTIME ,
 	   CLA_STARTDATE , CLA_TOTALTIME ,  JSON_QUERY(CLA_LIKE ,'$' RETURNING VARCHAR2) AS CLA_LIKE, 
-	   TO_CHAR(CLA_REGDATE,'YYYY-MM-DD') AS CLA_REGDATE, CLA_STATUS , CLA_ENDDATE, CLA_ENDRECRUIT, CLA_ENDVOTE
+	   TO_CHAR(CLA_REGDATE,'YYYY-MM-DD') AS CLA_REGDATE, CLA_STATUS , TO_CHAR(CLA_ENDDATE, 'YYYY-MM-DD') AS CLA_ENDDATE, TO_CHAR(CLA_ENDRECRUIT, 'YYYY-MM-DD') AS CLA_ENDRECRUIT, TO_CHAR(CLA_ENDVOTE, 'YYYY-MM-DD') AS CLA_ENDVOTE
 	FROM CLASS c 
 	WHERE CLA_NUM = #{cla_num}
 </select>
@@ -54,6 +54,13 @@ SELECT SUB_NUM, SUB_TITLE ,SUB_CONTENT
 	<collection property="classvo" resultMap="ClassVo"></collection>
 </resultMap>
 
+<resultMap type="ClassPeopleVo" id="ClassPeopleVo">
+	<result column="CPE_SEQ" property="cpe_seq"/>
+	<result column="CPE_MEM_ID" property="cpe_mem_id"/>
+	<result column="CPE_CLA_NUM" property="cpe_cla_num"/>
+	<collection property="votevo" resultMap="VoteVo"></collection>
+</resultMap>
+
 <resultMap type="InstructorVo" id="InstructorVo">
 	<result column="INS_ID" property="ins_id"/>
 	<result column="INS_NAME" property="ins_name"/>
@@ -63,8 +70,8 @@ SELECT SUB_NUM, SUB_TITLE ,SUB_CONTENT
 </resultMap>
 
 <!-- 과정 상세 조회 > 과정 강사 조회 -->
-<select id="classInsInfo" resultMap="InstructorVo" parameterType="java.lang.String">
-SELECT INS_ID, INS_NAME , INS_EMAIL ,INS_CARRER, VOT_SUB_NUM , JSON_QUERY(VOT_VOTER,'$' RETURNING VARCHAR2) AS VOT_VOTER
+<select id="classInsInfo" resultType="InstructorVo" parameterType="java.lang.String">
+SELECT VOT_INS_ID, INS_NAME , INS_EMAIL ,INS_CARRER, VOT_SUB_NUM , JSON_QUERY(VOT_VOTER,'$' RETURNING VARCHAR2) AS VOT_VOTER
 	FROM VOTE v , INSTRUCTOR i 
 	WHERE INS_ID = VOT_INS_ID AND VOT_CLA_NUM = #{vot_cla_num}
 	ORDER BY VOT_SUB_NUM
@@ -74,10 +81,10 @@ SELECT INS_ID, INS_NAME , INS_EMAIL ,INS_CARRER, VOT_SUB_NUM , JSON_QUERY(VOT_VO
 <insert id="classFormInsert" parameterType="java.util.Map">
 INSERT INTO CLASS (CLA_NUM, CLA_TITLE, CLA_CONTENT, 
 				   CLA_STATUS, CLA_REGDATE, CLA_ENDRECRUIT,
-				   CLA_ENDVOTE, CLA_SEQ , CLA_LIKE)
+				   CLA_ENDVOTE, CLA_LIKE, CLA_MAXPEO)
 			VALUES((SELECT 'CLA'||LPAD(MAX(SUBSTR(CLA_NUM,4)+1),3,'0') FROM CLASS), #{cla_title}, #{cla_content},
 				   '모집중', TO_CHAR(SYSDATE,'YYYY-MM-dd'), TO_CHAR(SYSDATE+7,'YYYY-MM-dd'),
-				   TO_CHAR(SYSDATE+10,'YYYY-MM-dd'),'[]')
+				   TO_CHAR(SYSDATE+10,'YYYY-MM-dd'),'[]', 20)
 </insert>
 
 <!-- 과정 과목 리스트 생성 -->
@@ -103,10 +110,23 @@ UPDATE CLASS SET CLA_TITLE = #{cla_title},
 				 CLA_STARTDATE = #{cla_startdate},
 				 CLA_ENDDATE = (SELECT CLA_STARTDATE + (CEIL (CLA_TOTALTIME/CLA_DAILYTIME))+ #{cla_addtime} 
 								FROM CLASS c
-								WHERE CLA_NUM = #{cla_num}),
-				 CLA_STATUS = '준비중'
+								WHERE CLA_NUM = #{cla_num})
 			 WHERE CLA_NUM = #{cla_num}
 </update>
+
+<delete id="classPeoDelete" parameterType="java.lang.String">
+DELETE FROM CLASS_PEOPLE WHERE CPE_CLA_NUM = #{cpe_cla_num}
+</delete>
+<delete id="classSubDelete" parameterType="java.lang.String">
+DELETE FROM CLASS_SUBJECT WHERE CSU_CLA_NUM = #{csu_cla_num}
+</delete>
+<delete id="classVoteDelete" parameterType="java.lang.String">
+DELETE FROM VOTE v WHERE VOT_CLA_NUM = #{vot_cla_num}
+</delete>
+<delete id="classDelete" parameterType="java.lang.String">
+DELETE FROM CLASS WHERE CLA_NUM = #{cla_num}
+</delete>
+
 
 <!-- 과정의 과목리스트의 총 시간 계산 -->
 <update id="classTimeUpdate">
@@ -115,6 +135,33 @@ UPDATE CLASS SET CLA_TOTALTIME = (SELECT SUM(CUR_TIME)
 	WHERE CUR_SUB_NUM = CSU_SUB_NUM AND CSU_CLA_NUM = (SELECT MAX(CLA_NUM)FROM CLASS c))
 			WHERE CLA_NUM = (SELECT MAX(CLA_NUM)FROM CLASS)
 </update>
+
+<!-- 과정 상태 변경 cron 처리-->
+<update id="endRecruit">
+UPDATE CLASS SET CLA_STATUS = '투표중' WHERE TO_CHAR(SYSDATE,'YYYY-MM-dd') = TO_CHAR(CLA_ENDRECRUIT,'YYYY-MM-dd')
+</update>
+<update id="endVote">
+UPDATE CLASS SET CLA_STATUS = '개강전' WHERE TO_CHAR(SYSDATE,'YYYY-MM-dd') = TO_CHAR(CLA_ENDVOTE,'YYYY-MM-dd');
+</update>
+<update id="classStart">
+UPDATE CLASS SET CLA_STATUS = '강의중' WHERE TO_CHAR(SYSDATE,'YYYY-MM-dd') = TO_CHAR(CLA_STARTDATE,'YYYY-MM-dd')
+</update>
+<update id="classEnd">
+UPDATE CLASS SET CLA_STATUS = '종강' WHERE TO_CHAR(SYSDATE,'YYYY-MM-dd') = TO_CHAR(CLA_ENDDATE,'YYYY-MM-dd');
+</update>
+
+
+<!-- 해당 과정 수강생과 강사 리스트 -->
+<select id="classVotedSelectAll" parameterType="java.lang.String" resultMap="ClassPeopleVo">
+SELECT CPE_MEM_ID
+	FROM CLASS_PEOPLE cp 
+	WHERE CPE_CLA_NUM = #{cpe_cla_num} AND CPE_STATUS = 'N'
+UNION
+(
+SELECT VOT_INS_ID
+	FROM VOTE v 
+	WHERE VOT_CLA_NUM = #{cpe_cla_num})
+</select>
 
 <!-- 임시 과목 선택 리스트 -->
 <select id="subjectSelected" resultType="SubjectVo">
@@ -144,7 +191,6 @@ SELECT JSON_QUERY(VOT_VOTER,'$' RETURNING VARCHAR2) AS VOT_VOTER
 	WHERE VOT_CLA_NUM = #{vot_cla_num} AND VOT_SUB_NUM = #{vot_sub_num} AND VOT_INS_ID = #{vot_ins_id}
 	ORDER BY VOT_SUB_NUM
 </select>
-
 
 <select id="voteRatio" parameterType="VoteVo" resultMap="VoteVo">
 SELECT JSON_QUERY(VOT_VOTER,'$' RETURNING VARCHAR2) AS VOT_VOTER , CLA_NUM , VOT_INS_ID
@@ -262,6 +308,7 @@ DELETE FROM CLASS_BOARD
 DELETE FROM CLASS_BOARD
 	WHERE CBO_SEQ = #{cbo_seq}
 </delete>
+
 
 <!-- ■■■ 쪽지 게시판 ■■■ -->
 <!-- 쪽지 게시판 전체조회(보낸 메시지/받은 메시지 구분) -->

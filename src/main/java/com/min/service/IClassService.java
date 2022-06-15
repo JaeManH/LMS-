@@ -46,17 +46,34 @@ public interface IClassService {
 	public int voteDelete(Map<String, Object> map); 
 	// 최종 뽑힌 강사의 과정 생성
 	public int votedInsert(Map<String, Object> map);
+	
 	// 과정 상태변경
 	public int classStatusUpdate(Map<String, Object> map);
 	
 	// 투표한 수강자 추가
 	public int classPeoInsert(Map<String, Object> map);
 	
+	// 해당 과정 수강생과 강사 리스트
+	public List<String> classVotedSelectAll(ClassPeopleVo vo);
+	
 	// 투표자 찾기
 	public int classPeoSelectAll(ClassPeopleVo vo);
+	// 과정 상태변경
+	public int classStatusChange();
+	
+	// 과정 삭제
+//	public int classPeoDelete(String cla_num);
+//	public int classSubDelete(String cla_num);
+//	public int classDelete(String cla_num);
+//	public int classVoteDelete(String cla_num);
+	public int classAllDelete(String cla_num);
 	
 	// 과목 리스트 뽑기(임시)
 	public List<SubjectVo> subjectSelected();
 	//최근에 등록된 과정 불러오기
 	public ClassVo classSelectLastInsert();
+	
+	
+	
+	
 }

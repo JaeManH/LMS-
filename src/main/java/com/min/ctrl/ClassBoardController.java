@@ -73,12 +73,12 @@ public class ClassBoardController {
 	
 	@RequestMapping(value = "/classVideoInsert.do", method = RequestMethod.POST)
 	public String classVideoInsert(@SessionAttribute("cla_num") String cla_num, @RequestParam String title, 
-								   @RequestParam String content, @RequestParam String videoAdd) {
+								   @RequestParam String content, @RequestParam String videoAdd, Authentication user) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("cbo_cla_num", cla_num);
 		map.put("cbo_cate", "동영상");
 		// 강사 본인 아이디 들어가는 곳
-		map.put("cbo_ins_id", "thdwndrlrkdtk123");
+		map.put("cbo_ins_id", user.getPrincipal());
 		map.put("cbo_title", title);
 		map.put("cbo_content", content);
 		map.put("cbo_youtubeadd", videoAdd);
@@ -101,7 +101,7 @@ public class ClassBoardController {
 	
 	@RequestMapping(value = "/classDocumentInsert.do", method = RequestMethod.POST)
 	public String classDocumentInsert(MultipartFile[] uploadFile, @RequestParam Map<String, Object> map,
-			@RequestParam List<MultipartFile> filename, @SessionAttribute("cla_num") String cla_num) throws IOException {
+			@RequestParam List<MultipartFile> filename, @SessionAttribute("cla_num") String cla_num, Authentication user) throws IOException {
 		String uploadFolder = "C:/upload/tmp";
 		
 		for (MultipartFile multipartFile : uploadFile) {
@@ -119,8 +119,7 @@ public class ClassBoardController {
 			String storedFileName = UUID.randomUUID().toString().replaceAll("-", "") + multipartFile.getOriginalFilename().substring(0, multipartFile.getOriginalFilename().indexOf("."));
 			map.put("cbo_cla_num", cla_num);
 			map.put("cbo_cate", "자료");
-			// 강사 본인 아이디 들어가는 곳
-			map.put("cbo_ins_id", "thdwndrlrkdtk123");
+			map.put("cbo_ins_id", user.getPrincipal());
 			map.put("doc_originname", multipartFile.getOriginalFilename());
 			map.put("doc_savename", storedFileName);
 			map.put("doc_path", uploadFolder);

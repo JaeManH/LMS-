@@ -126,7 +126,19 @@ public class ClassServiceImpl implements IClassService {
 		return dao.classPeoSelectAll(vo);
 	}
 	
-	
+	@Override
+	public List<String> classVotedSelectAll(ClassPeopleVo vo) {
+		return dao.classVotedSelectAll(vo);
+	}
+	// 크론처리
+	@Override
+	public int classStatusChange() {
+		int i = dao.endRecruit();
+		int j = dao.endVote();
+		int n = dao.classStart();
+		int m = dao.classEnd();
+		return (i>0||j>0||n>0||m>0)? 1:0;
+	}
 	
 	@Override
 	public List<SubjectVo> subjectSelected() {
@@ -137,4 +149,35 @@ public class ClassServiceImpl implements IClassService {
 	public ClassVo classSelectLastInsert() {
 		return dao.classSelectLastInsert();
 	}
+	
+
+//	@Override
+//	public int classPeoDelete(String cla_num) {
+//		return dao.classPeoDelete(cla_num);
+//	}
+//	
+//	@Override
+//	public int classSubDelete(String cla_num) {
+//		return dao.classSubDelete(cla_num);
+//	}
+//	
+//	@Override
+//	public int classDelete(String cla_num) {
+//		return dao.classDelete(cla_num);
+//	}
+//	
+//	@Override
+//	public int classVoteDelete(String cla_num) {
+//		return dao.classVoteDelete(cla_num);
+//	}
+	@Override
+	public int classAllDelete(String cla_num) {
+		int n = dao.classPeoDelete(cla_num);
+		int m = dao.classSubDelete(cla_num);
+		int u = dao.classVoteDelete(cla_num);
+		int i = dao.classDelete(cla_num);
+		return (n>0||m>0||u>0||i>0)? 1:0;
+	}
+	
+	
 }

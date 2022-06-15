@@ -16,6 +16,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,12 +52,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.min.dao.IClassBoardDao;
 import com.min.dao.IClassDao;
+import com.min.dao.IStatisticsDao;
+import com.min.dao.ITagDao;
 import com.min.service.IClassService;
+import com.min.service.IStatisticsService;
+import com.min.service.ITagService;
 import com.min.vo.ClassBoardVo;
 import com.min.vo.ClassPeopleVo;
 import com.min.vo.ClassVo;
 import com.min.vo.InstructorVo;
 import com.min.vo.SubjectVo;
+import com.min.vo.TagVo;
 import com.min.vo.VoteVo;
 
 import lombok.EqualsAndHashCode.Include;
@@ -70,6 +78,15 @@ public class Class_Test {
 
 	@Autowired
 	private IClassService service;
+	
+	@Autowired
+    private ITagDao tDao;
+    @Autowired
+    private IStatisticsDao sDao;
+    @Autowired
+    private ITagService tagService;
+    @Autowired
+    private IStatisticsService statisticsService;
 //
 //
 ////	@Test
@@ -439,20 +456,71 @@ public class Class_Test {
 //
 //	@Test
 	public void test3() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("cpe_mem_id", "altkdlf2273");
-		map.put("cpe_cla_num", "CLA027");
-		service.classPeoInsert(map);
-		
+//		Map<String, Object> map = new HashMap<String, Object>();
+//		map.put("cpe_mem_id", "altkdlf2273");
+//		map.put("cpe_cla_num", "CLA027");
+//		service.classPeoInsert(map);
+//		
+		System.out.println(service.classInsInfo("CLA019"));
 	}
+	@Test
+	 public void selectTagTest() throws ParseException, org.json.simple.parser.ParseException {
+	        //새로운 태그 추가하는 곳
+//	        logger.info("selectTagTest 실행");
+	        List<TagVo> lists = tDao.selectTagClassAndSubject();
+	        String temp;
+
+	        Pattern p = Pattern.compile("#([a-zA-Z0-9가-힣]*)");
+	        JSONParser parser = new JSONParser();
+	        JSONArray tags = new JSONArray();
+	        JSONArray arr = new JSONArray();
+	        List<String> addTags = new ArrayList<String>();
+	        List<String> insertTags = new ArrayList<String>();
+	        for (TagVo vo : lists) {
+	            if (vo.getTag() != null) {
+	                arr = (JSONArray) parser.parse(vo.getTag().toString());
+	            }else{
+	                continue;
+	            }
+	            //TODO 태그 추가하기
+	            for (int i = 0; i < arr.size(); i++) {
+	                Matcher m = p.matcher(arr.get(i).toString());
+	                while (m.find()) {
+	                    temp = m.group().replace(" ", "_").replace("#", "").toString().toLowerCase();
+	                    //만약에 기존 태그중에 없으면 새로운 태그 추가
+	                    if (!tags.contains(temp) && !addTags.contains(temp)) {
+	                        addTags.add(temp);
+	                    }
+	                }
+	            }
+	        }
+	        int result = tagService.insertTagNew(addTags);
+	        System.out.println(result);
+	    }
 	
 //	@Test
 	public void te() {
+//		LocalDate myNow = LocalDate.now();
+//		LocalDate now = LocalDate.of(myNow.getYear(), myNow.getMonth(), myNow.getDayOfMonth()+15);
+//		
+//		System.out.println(now);
+		VoteVo vo = new VoteVo();
+		vo.setVot_cla_num("CLA027");
+		List<VoteVo> list = service.votedPeople(vo);
+		String id = "thdwndrlrkdtk123";
+		System.out.println("list : "+list);
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i).getVot_ins_id());
+			if(list.get(i).getVot_ins_id().equals(id)) {
+				System.out.println("중복된 id가 존재합니다.");
+				return;
+			}
+		}
 		
 	}
 	
 	// 최종본
-	@Test
+//	@Test
 	public void test5() throws org.json.simple.parser.ParseException {
 			JSONParser parser = new JSONParser();
 			JSONArray id = new JSONArray();
@@ -961,21 +1029,28 @@ public class Class_Test {
 ////		}
 ////		
 ////	}
-////	// 투표된 강사 선정
-//	@Test
-	public void vo2() throws org.json.simple.parser.ParseException {
-		String sub[] = {"20220523SUB100", "20220523SUB101"};
+////	
+	
+	// 투표된 강사 선정
+	@Test
+	public void vo3() throws org.json.simple.parser.ParseException {
+//		String sub[] = {"20220523SUB102", "20220523SUB108", "20220523SUB109"};
+		String cla_num="CLA032";
 		
-		for (int h = 0; h < sub.length; h++) {
+		
+		ClassVo voed = new ClassVo();
+ 		voed.setCla_num(cla_num);
+		List<VoteVo> tm = service.classTimeSearch(voed);
+		
+		for (int h = 0; h < tm.size(); h++) {
 		
 //		String sub = "20220523SUB100";
 		
 		VoteVo vo = new VoteVo();
-		vo.setVot_sub_num(sub[h]);
+		vo.setVot_sub_num(tm.get(h).getVot_sub_num());
 //		vo.setVot_sub_num(sub);
-		vo.setVot_cla_num("CLA027");
+		vo.setVot_cla_num(cla_num);
 		List<VoteVo> lists = service.voteRatio(vo);
-		String cla_num = "CLA027";
 //		String vot_sub_num = "20220523SUB100";
 		
 		JSONParser parser = new JSONParser();
@@ -1047,23 +1122,28 @@ public class Class_Test {
 			}
 			
 			System.out.println("최종 뽑힌 강사 : "+re);
+			
+			
 			for (int i = 0; i < re.size(); i++) {
 				json = (JSONObject) parser.parse(re.get(i).toString());
 			}
+			if(json.get("id").equals(null)) {
+				return;
+			}
 			System.out.println(json.get("id"));
 			
-//			Map<String, Object> mapped = new HashMap<String, Object>();
-//			mapped.put("vot_cla_num", cla_num);
-//			mapped.put("vot_sub_num", sub[h]);
-//			service.voteDelete(mapped);
-//			mapped.clear();
-//			
-//			mapped.put("vot_cla_num", cla_num);
-//			mapped.put("vot_sub_num", sub[h]);
-//			mapped.put("vot_ins_id", json.get("id"));
-//			mapped.put("vot_voter", arr.toJSONString());
-//			service.votedInsert(mapped);
-//			System.out.println(mapped);
+			Map<String, Object> mapped = new HashMap<String, Object>();
+			mapped.put("vot_cla_num", cla_num);
+			mapped.put("vot_sub_num", tm.get(h).getVot_sub_num());
+			service.voteDelete(mapped);
+			mapped.clear();
+			
+			mapped.put("vot_cla_num", cla_num);
+			mapped.put("vot_sub_num", tm.get(h).getVot_sub_num());
+			mapped.put("vot_ins_id", json.get("id"));
+			mapped.put("vot_voter", arr.toJSONString());
+			service.votedInsert(mapped);
+			System.out.println(mapped);
 			
 			
 			
@@ -1072,6 +1152,31 @@ public class Class_Test {
 			System.out.println("투표자가 없습니다.");
 		}
 	}
+		System.out.println("■■■■■■■■■■■■■■■■■■■■■■■■");
+		VoteVo vo = new VoteVo();
+		vo.setVot_cla_num("CLA032");
+		List<VoteVo> list = service.votedPeople(vo);
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).getVot_voter();
+			System.out.println("널값 체크 : "+list.get(i).getVot_voter());
+			System.out.println("널값 체크용 서브 : "+list.get(i).getVot_sub_num());
+			if(list.get(i).getVot_voter()==null) {
+				System.out.println("삭제해야대용 : "+list.get(i).getVot_sub_num());
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("vot_cla_num", "CLA032");
+				map.put("vot_sub_num", list.get(i).getVot_sub_num());
+				service.voteDelete(map);
+			}
+		}
+	}
+	
+	
+//	@Test
+	public void del() {
+		VoteVo vo = new VoteVo();
+		vo.setVot_cla_num("CLA032");
+		service.votedPeople(vo);
+		System.out.println(vo.getVot_voter());
 	}
 ////	
 ////	@Scheduled(fixedDelay=1000)

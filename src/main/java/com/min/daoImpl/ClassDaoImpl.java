@@ -152,4 +152,51 @@ public class ClassDaoImpl implements IClassDao{
 		return sqlSession.selectOne(NS+"classSelectLastInsert");
 	}
 
+	@Override
+	public List<String> classVotedSelectAll(ClassPeopleVo vo) {
+		return sqlSession.selectList(NS+"classVotedSelectAll",vo);
+	}
+
+	@Override
+	public int endRecruit() {
+		return sqlSession.update(NS+"endRecruit");
+	}
+
+	@Override
+	public int endVote() {
+		return sqlSession.update(NS+"endVote");
+	}
+
+	@Override
+	public int classStart() {
+		return sqlSession.update(NS+"classStart");
+	}
+
+	@Override
+	public int classEnd() {
+		return sqlSession.update(NS+"classEnd");
+	}
+
+	
+	@Override
+	public int classPeoDelete(String cla_num) {
+		return sqlSession.delete(NS+"classPeoDelete",cla_num);
+	}
+	
+	
+	@Override
+	public int classSubDelete(String cla_num) {
+		return sqlSession.delete(NS+"classSubDelete",cla_num);
+	}
+	
+	@Override
+	public int classDelete(String cla_num) {
+		return sqlSession.delete(NS+"classDelete",cla_num);
+	}
+	
+	@Override
+	public int classVoteDelete(String cla_num) {
+		return sqlSession.delete(NS+"classVoteDelete",cla_num);
+	}
+	
 }

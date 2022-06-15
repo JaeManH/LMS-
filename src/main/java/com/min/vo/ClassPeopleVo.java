@@ -21,4 +21,6 @@ public class ClassPeopleVo implements Serializable{
 	private int cpe_seq;
 	private String cpe_mem_id;
 	private String cpe_cla_num;
+	
+	private VoteVo votevo;
 }

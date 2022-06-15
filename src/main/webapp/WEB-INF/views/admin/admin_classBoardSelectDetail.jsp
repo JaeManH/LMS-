@@ -55,6 +55,7 @@ function delVideo(val){
                     <li><i class="icofont icofont-ui-chat"></i>등록일: ${result.cbo_regdate}</li>
                   </ul>
                   <input type="hidden" name="cbo_doc_seq" value="${result.cbo_doc_seq}">
+                
                   <c:if test="${result.cbo_cate eq '자료'}">
                   <button value="${doc_originname}" name="doc_originname" type="submit" style="float: right; margin-top: 15px;" class="btn btn-light" onclick="download(this)">다운로드</button>
                   </c:if>
@@ -85,7 +86,9 @@ function delVideo(val){
       </div>
     </div>
   </div>
+    
   <button style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-light" onclick="javascript:history.back(-1)">뒤로가기</button>
+  <button style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-primary" onclick="modify()">글 수정하기</button>
   <button style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-primary" onclick="modify()">글 수정하기</button>
   <c:if test="${result.cbo_cate eq '자료'}">
   <button style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-danger" value="${result.cbo_doc_seq}" onclick="delDoc(this)">삭제하기</button>

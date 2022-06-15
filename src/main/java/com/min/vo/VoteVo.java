@@ -23,4 +23,5 @@ public class VoteVo implements Serializable{
 	private String vot_voter;
 	
 	private ClassVo classvo;
+	
 }

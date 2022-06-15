@@ -53,7 +53,10 @@
                             <c:if test="${vo.cla_status eq '모집중'}">
                             <span class="badge badge-primary">${vo.cla_status}</span>
                             </c:if>
-                            <c:if test="${vo.cla_status eq '준비중'}">
+                             <c:if test="${vo.cla_status eq '승인중'}">
+                            <span class="badge badge-danger">${vo.cla_status}</span>
+                            </c:if>
+                            <c:if test="${vo.cla_status eq '개강전'}">
                             <span class="badge badge-secondary">${vo.cla_status}</span>
                             </c:if>
                             <c:if test="${vo.cla_status eq '수강중'}">
@@ -88,15 +91,11 @@
                                   </li>
                                 </ul>
                               </div>
-<!--                               <div class="project-status mt-4"> -->
-<!--                                 <div class="media mb-0"> -->
-<!--                                   <p>70% </p> -->
-<!--                                   <div class="media-body text-end"><span>Done</span></div> -->
-<!--                                 </div> -->
-<!--                                 <div class="progress" style="height: 5px"> -->
-<!--                                   <div class="progress-bar-animated bg-primary progress-bar-striped" role="progressbar" style="width: 70%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div> -->
-<!--                                 </div> -->
-<!--                               </div> -->
+                              
+                              <sec:authentication property="principal"  var="id" /><br>
+						<%-- 	    principal =>  시큐리티 세션 아아디 : ${id}<br> --%>
+							  <sec:authentication property="Details" var="info" /><br>
+						<%-- 		회원권한 : ${info.auth} <br> --%>
                             </div>
                           </div>
                  		  </c:forEach>

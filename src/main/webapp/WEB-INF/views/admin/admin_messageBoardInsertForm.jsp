@@ -35,6 +35,7 @@
                         <div class="col">
                           <div class="mb-3">
                             <label class="form-label" for="exampleInputPassword2">송신자</label>
+                            <input name="mes_sender" class="form-control" id="exampleInputPassword2" type="text" value="${id}" readonly="readonly">
                           </div>
                         </div>
                       </div>

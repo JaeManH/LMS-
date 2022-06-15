@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +26,7 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +68,15 @@ public class ClassController {
 	
 	@RequestMapping(value = "/classSelectDetail.do", method = RequestMethod.GET, produces = "application/json")
 	public String classSelectDetail(@RequestParam String cla_num, Model model, HttpSession session) throws org.json.simple.parser.ParseException {
+		LocalDate now = LocalDate.now();
+		model.addAttribute("now", now);
+		
+		ClassPeopleVo vo = new ClassPeopleVo();
+		vo.setCpe_cla_num(cla_num);
+		List<String> list = service.classVotedSelectAll(vo);
+		System.out.println(list);
+		model.addAttribute("idList", list);
+		
 		JSONParser parser = new JSONParser();
 		session.setAttribute("cla_num", cla_num);
 		ClassVo result = service.classSelectDetail(cla_num);
@@ -78,9 +89,11 @@ public class ClassController {
 		model.addAttribute("lists", lists);
 		System.out.println(result);
 		
+//		VoteVo voed = new VoteVo();
+//		voed.setVot_cla_num(cla_num);
+//		List<VoteVo> insList = service.votedPeople(voed);
 		List<InstructorVo> insList = service.classInsInfo(cla_num);
 		model.addAttribute("insList", insList);
-		System.out.println(insList);
 		
 		System.out.println(insList);
 		
@@ -94,7 +107,8 @@ public class ClassController {
 		JSONObject json = new JSONObject();
 		try {
 			for (int i = 0; i < insList.size(); i++) {
-				res = insList.get(i).getVoteVo().getVot_voter();
+				res = insList.get(i).getVot_voter();
+//				res = insList.get(i).getVot_voter();
 				System.out.println("원본 : "+res);
 				if(res==null) {
 					res = "0";
@@ -153,27 +167,30 @@ public class ClassController {
 		map.put("cla_title", title);
 		map.put("cla_content", content);
 		int n = service.classFormInsert(map);
-		ClassVo classVo = service.classSelectLastInsert();
-		String classNum = classVo.getCla_num();
+		
+//		ClassVo classVo = service.classSelectLastInsert();
+//		String classNum = classVo.getCla_num();
+		
 		map.clear();
 		//TODO 과정 태그 넣기
 		for (String listed : subList) {
 			map.put("csu_sub_num", listed);
 			map.put("vot_sub_num", listed);
 			int m = service.classSubjectInsert(map);
-			map.clear();
-			String tag = tagService.selectSubjectTag(listed);
-			Matcher matcher = TagController.TAG_REGEX.matcher(tag);
-			while (matcher.find()){
-				String temp = matcher.group().replace(" ", "_").replace("#", "").toString().toLowerCase();
-				JSONObject object = (JSONObject) parser.parse(tagService.selectTagJson(temp));
-				JSONArray array = (JSONArray) object.get("class");
-				array.add(classNum);
-				object.replace("class",array);
-				map.put("id",object.toJSONString());
-				map.put("name",temp);
-				tagService.updateTag(map);
-			}
+			
+//			map.clear();
+//			String tag = tagService.selectSubjectTag(listed);
+//			Matcher matcher = TagController.TAG_REGEX.matcher(tag);
+//			while (matcher.find()){
+//				String temp = matcher.group().replace(" ", "_").replace("#", "").toString().toLowerCase();
+//				JSONObject object = (JSONObject) parser.parse(tagService.selectTagJson(temp));
+//				JSONArray array = (JSONArray) object.get("class");
+//				array.add(classNum);
+//				object.replace("class",array);
+//				map.put("id",object.toJSONString());
+//				map.put("name",temp);
+//				tagService.updateTag(map);
+//			}
 			map.clear();
 		}
 		service.classTimeUpdate();
@@ -182,8 +199,12 @@ public class ClassController {
 	
 	
 	@RequestMapping(value = "/classModifyForm.do", method = RequestMethod.GET)
-	public String classModifyForm(@SessionAttribute("cla_num") String cla_num) {
+	public String classModifyForm(@SessionAttribute("cla_num") String cla_num, Model model) {
 		logger.info("classModifyForm : 과정 수정 화면이동");
+		LocalDate myNow = LocalDate.now();
+		LocalDate now = LocalDate.of(myNow.getYear(), myNow.getMonth(), myNow.getDayOfMonth()+15);
+		
+		model.addAttribute("now", now.toString());
 		return "admin/admin_classModifyForm";
 	}
 	
@@ -280,6 +301,8 @@ public class ClassController {
  		// 이걸 사용 ---------------
  		ClassVo voed = new ClassVo();
  		voed.setCla_num(cla_num);
+ 		
+ 		
  		int cnt = 0;
  		List<VoteVo> tm = service.classTimeSearch(voed);
  		for (VoteVo voteVo : tm) {
@@ -311,18 +334,25 @@ public class ClassController {
 		System.out.println(month);
 		System.out.println(date);
 		
-		
-		
-		// 투표 초기화 및 업데이트
-//		String sub[] = {"20220523SUB100","20220523SUB101"};
+		return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
+	}
+	
+	
+	@RequestMapping(value = "/votedResult.do", method = RequestMethod.GET)
+	public String votedResult(@SessionAttribute("cla_num") String cla_num) throws IOException, org.json.simple.parser.ParseException {
+		ClassVo voed = new ClassVo();
+ 		voed.setCla_num(cla_num);
+		List<VoteVo> tm = service.classTimeSearch(voed);
 		
 		for (int h = 0; h < tm.size(); h++) {
 		
+//		String sub = "20220523SUB100";
+		
 		VoteVo vo = new VoteVo();
 		vo.setVot_sub_num(tm.get(h).getVot_sub_num());
+//		vo.setVot_sub_num(sub);
 		vo.setVot_cla_num(cla_num);
 		List<VoteVo> lists = service.voteRatio(vo);
-//		String cla_num = "CLA026";
 //		String vot_sub_num = "20220523SUB100";
 		
 		JSONParser parser = new JSONParser();
@@ -340,6 +370,10 @@ public class ClassController {
 				JSONObject obj = new JSONObject();
 				resu = lists.get(i).getVot_voter();
 				ins = lists.get(i).getVot_ins_id();
+				
+				System.out.println("원본 : "+resu);
+				System.out.println("강사 : "+ins);
+				
 				if(lists.get(i).getVot_voter() == null) {
 					continue;
 				}
@@ -351,8 +385,7 @@ public class ClassController {
 					arr.add(obj2);
 				}
 				
-				System.out.println("원본 : "+resu);
-				System.out.println("강사 : "+ins);
+				
 				if(resu==null) {
 					resu = "0";
 					obj.put("voted", resu);
@@ -366,7 +399,6 @@ public class ClassController {
 						voted++;
 						
 					}
-					
 					
 					System.out.println("횟수 : "+voted);
 					obj.put("voted", voted);
@@ -392,8 +424,13 @@ public class ClassController {
 			}
 			
 			System.out.println("최종 뽑힌 강사 : "+re);
+			
+			
 			for (int i = 0; i < re.size(); i++) {
 				json = (JSONObject) parser.parse(re.get(i).toString());
+			}
+			if(json.get("id").equals(null)) {
+				continue;
 			}
 			System.out.println(json.get("id"));
 			
@@ -410,26 +447,59 @@ public class ClassController {
 			service.votedInsert(mapped);
 			System.out.println(mapped);
 			
+			
+			
+			
 		} catch (Exception e) {
 			System.out.println("투표자가 없습니다.");
 		}
 	}
-		
-		return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
-	}
+		System.out.println("■■■■■■■■■■■■■■■■■■■■■■■■");
+		VoteVo vo = new VoteVo();
+		vo.setVot_cla_num("CLA032");
+		List<VoteVo> list = service.votedPeople(vo);
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).getVot_voter();
+			System.out.println("널값 체크 : "+list.get(i).getVot_voter());
+			System.out.println("널값 체크용 서브 : "+list.get(i).getVot_sub_num());
+			if(list.get(i).getVot_voter()==null) {
+				System.out.println("삭제해야대용 : "+list.get(i).getVot_sub_num());
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("vot_cla_num", "CLA032");
+				map.put("vot_sub_num", list.get(i).getVot_sub_num());
+				service.voteDelete(map);
+			}
+		}
+			return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
+		}
+	
 	
 	@RequestMapping(value = "/voteBoxInsert.do", method = RequestMethod.POST)
-	public String voteBoxInsert(@RequestParam String sub_num, @SessionAttribute("cla_num") String cla_num) {
+	public String voteBoxInsert(@RequestParam String sub_num, @SessionAttribute("cla_num") String cla_num, 
+			Authentication user) {
+		VoteVo vo = new VoteVo();
+		vo.setVot_cla_num(cla_num);
+		vo.setVot_sub_num(sub_num);
+		List<VoteVo> list = service.voteRatio(vo);
+		for (int i = 0; i < list.size(); i++) {
+//			if(list.get(i).getVot_ins_id().equals(user.toString())) {
+			if(list.get(i).getVot_ins_id().equals("thdwndrlrkdtk123")) {
+				return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
+			}
+		}
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("vot_sub_num", sub_num);
 		map.put("vot_cla_num", cla_num);
+//		map.put("vot_ins_id", user.getPrincipal());
 		map.put("vot_ins_id", "thdwndrlrkdtk123");
 		service.voteBoxInsert(map);
 		return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
 	}
 	
 	@RequestMapping(value = "/updateVote.do", method = RequestMethod.POST)
-	public String updateVote(@SessionAttribute("cla_num") String cla_num, HttpServletRequest req, @RequestParam String vot_sub_num, @RequestParam String ins_id) throws ParseException {
+	public String updateVote(@SessionAttribute("cla_num") String cla_num, HttpServletRequest req, @RequestParam String vot_sub_num, @RequestParam String ins_id, 
+			Authentication user) throws ParseException {
 		
 		JSONParser parser = new JSONParser();
 		JSONArray id = new JSONArray();
@@ -437,7 +507,7 @@ public class ClassController {
 //		String cla_num = "CLA027";
 //		String vot_sub_num = "20220523SUB101";
 //		String ins_id = "thdwndrlrkdtk123";
-		String inputId = "altkdlf2273";
+//		String inputId = user.getPrincipal();
 		Map<String, Object> mapped = new HashMap<String, Object>();
 		
 		
@@ -514,7 +584,7 @@ public class ClassController {
 		if(arr.equals("")) {
 			System.out.println("투표한 사람이 없습니다.");
 			
-			fin.put("id", inputId);
+			fin.put("id", user.getPrincipal());
 			fin.put("pay", "before");
 			id.add(fin);
 			
@@ -531,12 +601,12 @@ public class ClassController {
 			
 			ClassPeopleVo voed = new ClassPeopleVo();
 			voed.setCpe_cla_num(cla_num);
-			voed.setCpe_mem_id(inputId);
+			voed.setCpe_mem_id(user.getPrincipal().toString());
 			int n = service.classPeoSelectAll(voed);
 			if(n>0) {
 				return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
 			}else {
-				mapped.put("cpe_mem_id", inputId);
+				mapped.put("cpe_mem_id", user.getPrincipal());
 				mapped.put("cpe_cla_num", cla_num);
 				service.classPeoInsert(mapped);
 				System.out.println("maped : "+mapped);
@@ -552,7 +622,7 @@ public class ClassController {
 			
 //			JSONObject ided = (JSONObject)parser.parse(list.toJSONString());
 //			
-			if(ids.equals(inputId)) {
+			if(ids.equals(user.getPrincipal())) {
 				System.out.println("중복된 아이디가 있습니다.");
 				return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
 			}
@@ -562,7 +632,7 @@ public class ClassController {
 		System.out.println("result2 : "+ arr);
 		
 		
-		fin.put("id", inputId);
+		fin.put("id", user.getPrincipal());
 		fin.put("pay", "before");
 		id.add(fin);
 		
@@ -579,12 +649,12 @@ public class ClassController {
 	
 		ClassPeopleVo voed = new ClassPeopleVo();
 		voed.setCpe_cla_num(cla_num);
-		voed.setCpe_mem_id(inputId);
+		voed.setCpe_mem_id(user.getPrincipal().toString());
 		int n = service.classPeoSelectAll(voed);
 		if(n>0) {
 			return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
 		}else {
-			mapped.put("cpe_mem_id", inputId);
+			mapped.put("cpe_mem_id", user.getPrincipal());
 			mapped.put("cpe_cla_num", cla_num);
 			service.classPeoInsert(mapped);
 			System.out.println("maped : "+mapped);

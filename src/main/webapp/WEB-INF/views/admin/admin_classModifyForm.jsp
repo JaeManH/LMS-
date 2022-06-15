@@ -79,7 +79,7 @@
                         <div class="col">
                           <div class="mb-3">
                             <label class="form-label" for="exampleFormControlInput7">과정 시작일</label>
-                            <input name="cla_startdate" class="form-control" id="exampleFormControlInput6" type="date" placeholder="과정의 시작일을 입력해주세요">
+                            <input name="cla_startdate" class="form-control" id="exampleFormControlInput6" type="date" min="${now}" placeholder="과정의 시작일을 입력해주세요">
                           </div>
                         </div>
                       </div>

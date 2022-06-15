@@ -136,7 +136,13 @@ function selectAll(selectAll)  {
                     </div>
                   </div>
                  </c:forEach>
+                 <sec:authentication property="principal"  var="id" /><br>
+<%-- 	   				principal =>  시큐리티 세션 아아디 : ${id}<br> --%>
+				 <sec:authentication property="Details" var="info" /><br>
+				 <!-- 테스트 하려면 c:if문 밖으로 빼고 test -->
+                 <c:if test="${info.auth eq 'ROLE_INSTRUCTOR' and result.cla_regdate < now and now < result.cla_endrecruit}">
                  <button style="margin-left: 30px; margin-bottom: 30px; width: 132px;" type="submit" class="btn btn-outline-primary">지원하기</button>
+                 </c:if>
                 </div>
               </div>
             </div>
@@ -150,21 +156,22 @@ function selectAll(selectAll)  {
                       <div class="tab-pane fade show active" id="top-home" role="tabpanel" aria-labelledby="top-home-tab">
                         <div class="row">
              			 <c:forEach items="${insList}" var="vo" varStatus="vs">
+             			 <br>
                           <div class="col-xxl-4 col-lg-6">
-             			 	<input onclick="selectAll(selectAll)" type="checkbox" id="vot_sub_num${vs.count}" name="vot_sub_num" value="${vo.voteVo.vot_sub_num}" style="float: left; margin-left: 10px; margin-top: 2px;">
+             			 	<input onclick="selectAll(selectAll)" type="checkbox" id="vot_sub_num${vs.count}" name="vot_sub_num" value="${vo.vot_sub_num}" style="float: left; margin-left: 10px; margin-top: 2px;">
                           	<div class="parent" id="red" style="display: none;">
-             			 	<input type="checkbox" id="ins_id${vs.count}" name="ins_id" value="${vo.ins_id}" style="float: left; margin-left: 10px; margin-top: 2px;">
-             			 	<input type="hidden" name="ins" value="${vo.ins_id}">
+             			 	<input type="checkbox" id="ins_id${vs.count}" name="ins_id" value="${vo.vot_ins_id}" style="float: left; margin-left: 10px; margin-top: 2px;">
+             			 	<input type="hidden" name="ins" value="${vo.vot_ins_id}">
                           	</div>
                             <i data-feather="list" style="float: left; padding-bottom: 8px;"></i><h6 style="border: 10px; border-radius: 5px;">&nbsp;지원 강사 ${vs.count}</h6>
                             <div class="project-box">
-                            <span class="badge badge-secondary" style="width:210px; height:21px; font-size:13px; float:right; align-content: center; margin-top: 5px;">과정 코드 : ${vo.voteVo.vot_sub_num}</span>
+                            <span class="badge badge-secondary" style="width:210px; height:21px; font-size:13px; float:right; align-content: center; margin-top: 5px;">과정 코드 : ${vo.vot_sub_num}</span>
                             <br>
                             <br>
                               <h6><a href="./classSelectDetail.do?cla_num=" style="color: #0B614B;">강사 이름 :  ${vo.ins_name}</a></h6>
                               <div class="media"><img class="img-20 me-2 rounded-circle" src="../assets/images/user/3.jpg" alt="" data-original-title="" title="">
                                 <div class="media-body">
-                                  <p>강사 ID : ${vo.ins_id}</p>
+                                  <p>강사 ID : ${vo.vot_ins_id}</p>
                                 </div>
                               </div>
                               <div class="customers">
@@ -174,7 +181,7 @@ function selectAll(selectAll)  {
                                   <li class="d-inline-block"><img class="img-30 rounded-circle" src="../assets/images/user/1.jpg" alt="" data-original-title="" title=""></li>
                                   <li class="d-inline-block ms-2">
                                   	<br>
-                                  	<input type="hidden" value="${vo.voteVo.vot_voter}" name="vot_voter">
+                                  	<input type="hidden" value="${vo.vot_voter}" name="vot_voter">
                                   </li>
                                 </ul>
                               </div>
@@ -202,14 +209,37 @@ function selectAll(selectAll)  {
                        </div>
                      </div>
                     </div>
+                    <!-- 테스트 하려면 c:if문 밖으로 빼고 test -->
+                    <c:if test="${info.auth eq 'ROLE_USER' and result.cla_endrecruit < now and now < result.cla_endvote}">
                     	  <button style="margin-left : 30px; width: 132px;" type="submit" class="btn btn-outline-primary">투표하기</button>
+                    </c:if>
                     </form>
                   </div>
                   <br>
           <button style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-light" onclick="javascript:history.back(-1)">뒤로가기</button>
+          <c:if test="${info.auth eq 'ROLE_ADMIN' and now > result.cla_endvote and now < result.cla_startdate}">
+          </c:if>
+          <a style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-danger" href="./votedResult.do">승 인</a>
+          
+          <c:forEach items="${idList}" var="ids">
+          <c:if test="${ids.cpe_mem_id eq id}">
           <a style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-primary" href="./classBoardSelectedAll.do">자료게시판</a>
+          </c:if>
+          
+          <!-- 테스트 하려면 c:if문 밖으로 빼고 test -->
+          <c:if test="${ids.cpe_mem_id eq id and info.auth eq 'ROLE_INSTRUCTOR' and now > result.cla_endvote and now < result.cla_startdate and result.cla_status eq '개강전'}">
           <a style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-primary" href="./classModifyForm.do?cla_num=">글 수정하기</a>
-<%--           <a style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-primary" href="./pay.do?cla_title=${result.cla_title}&cla_content=${result.cla_content}">결제하기</a> --%>
+          </c:if>
+          <!-- 테스트 하려면 c:if문 밖으로 빼고 test -->
+          <c:if test="${ids.cpe_mem_id eq id and now > cla_endvote and now < result.cla_enddate}">
+          <a style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-primary" href="./pay.do?cla_title=${result.cla_title}&cla_content=${result.cla_content}&cla_price=${result.cla_price}">결제하기</a>
+          </c:if>
+          
+          </c:forEach>
+          
+          
+          
+          
           <!-- Container-fluid Ends-->
         </div>
         <br>
