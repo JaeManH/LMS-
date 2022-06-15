@@ -20,11 +20,10 @@
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3>이름</h3>
+                    <h3>태그 검색</h3>
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.do">Home</a></li>
-                        <li class="breadcrumb-item">중분류</li>
-                        <li class="breadcrumb-item active">소분류</li>
+                        <li class="breadcrumb-item"><a href="/main.do">Home</a></li>
+                        <li class="breadcrumb-item active">태그 검색</li>
                     </ol>
                 </div>
             </div>
@@ -32,7 +31,6 @@
         <!-- Container-fluid starts-->
         <div class="container-fluid">
             <div class="row">
-                <h5>Content</h5>
                 <h1>태그 검색 페이지</h1>
                 <select style="width: 150px;"  id="category">
                     <option  value="과정" >과정</option>
