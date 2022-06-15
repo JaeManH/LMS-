@@ -153,8 +153,10 @@ public class payController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pay_num", paynum);
 		int n = service.statusUpdate(map);
+		
+		
 		Map<String, Object> phoneMap = new HashMap<String, Object>();
-		phoneMap.put("tra_id", user.getPrincipal());
+		phoneMap.put("tra_id", user.getPrincipal());		
 		String phone = service.selectPhone(phoneMap); 
 		String phoneNum = phone.substring(0, 3)+"-"+phone.substring(3,7)+"-"+phone.substring(7,phone.length());
 		SMSservice.certifiedPhoneNumber(phoneNum , paynum,"refund");

@@ -63,7 +63,14 @@ public class PayServiceImpl implements IPayService{
 		int n1 = dao.statusUpdate(map);
 		int n2 = dao.returnCoupon(map);
 		int n3 = dao.returnMileage(map);
-		return n1 + n2 + n3;
+		PayVo vo = dao.getPayDetail(map);
+		int plusMile = (int)(vo.getPay_price()*0.1);
+		String traId = vo.getPay_tra_buyer();
+		System.out.println("useMilage : " + plusMile + traId);
+		map.put("tra_id", traId);
+		map.put("useMilage", plusMile);
+		int n4 = dao.updateMileage(map);
+		return n1 + n2 + n3 + n4;
 	}
 
 	@Override
