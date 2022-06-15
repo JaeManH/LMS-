@@ -12,6 +12,7 @@ import com.min.service.IPayService;
 import com.min.vo.CouponVo;
 import com.min.vo.MemberVo;
 import com.min.vo.PayVo;
+import com.min.vo.SalaryVo;
 
 @Service
 public class PayServiceImpl implements IPayService{
@@ -102,12 +103,6 @@ public class PayServiceImpl implements IPayService{
 
 	@Override
 	public int insertSalary(Map<String, Object> map) {
-//		//sal_cla_num , sal_ins id만큼 for문
-//		List<String> list = dao.getIns(map);
-//		for(int i = 0; i<list.size(); i++) {
-//			int n = dao.insertSalary(map);
-//			System.out.println(list.get(i) + "에게 지급완료" + n);
-//		}
 		return dao.insertSalary(map);
 	}
 
@@ -119,6 +114,11 @@ public class PayServiceImpl implements IPayService{
 	@Override
 	public List<String> getIns(Map<String, Object> map) {
 		return dao.getIns(map);
+	}
+
+	@Override
+	public List<SalaryVo> getSalary() {
+		return dao.getSalary();
 	}
 
 }

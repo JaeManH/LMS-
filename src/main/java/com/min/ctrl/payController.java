@@ -22,6 +22,7 @@ import com.min.serviceImpl.coolSMS;
 import com.min.vo.CouponVo;
 import com.min.vo.MemberVo;
 import com.min.vo.PayVo;
+import com.min.vo.SalaryVo;
 
 
 @Controller
@@ -204,4 +205,11 @@ public class payController{
 		return "user/user_MyDiscount";
 	}
 	
+	//수강료 지급 페이지 이동하기
+	@RequestMapping(value = "/salary.do" ,method = RequestMethod.GET)
+	public String salary(Model model) {
+		List<SalaryVo> getSal = service.getSalary();
+		model.addAttribute("lists",getSal);
+		return "admin/admin_salary";
+	}
 }

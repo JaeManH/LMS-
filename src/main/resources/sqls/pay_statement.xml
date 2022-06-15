@@ -273,5 +273,18 @@
 		SELECT VOT_INS_ID FROM VOTE WHERE VOT_CLA_NUM =#{sal_cla_num}
 	</select>
 	
+	<!-- 수강료 지급내역 가져오기 -->
+	<select id="getSalary" resultType="SalaryVo">
+		SELECT SAL_SEQ,
+		SAL_CLA_NUM,
+		SAL_TOTALPRICE, 
+		SAL_INS_ID, 
+		SAL_BANKNUM, 
+		SAL_BANK, 
+		SAL_PRICE, 
+		SAL_STATUS, 
+		SAL_DATE
+		FROM SALARY
+	</select>
 	
 </mapper>
