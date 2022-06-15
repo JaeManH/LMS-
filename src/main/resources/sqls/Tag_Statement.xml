@@ -26,7 +26,7 @@
     <!-- 기존에 없는 태그를 추가한다 -->
     <insert id="insertTagNew" parameterType="java.lang.String">
         INSERT INTO TAG(TAG_NAME,TAG_IDS)
-        VALUES (#{tag},JSON_OBJECT('subject' :'[]','class' : '[]'))
+        VALUES (#{tag},'{"subject":[],"class":[]}')
     </insert>
     
     <!--  과목에 있는 태그를 조회한다.  -->
