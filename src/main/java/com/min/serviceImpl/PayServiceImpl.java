@@ -1,5 +1,6 @@
 package com.min.serviceImpl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,14 +100,25 @@ public class PayServiceImpl implements IPayService{
 		return dao.selectPhone(map);
 	}
 
-//	@Override
-//	public int insertSalary(Map<String, Object> map) {
-//		return dao.insertSalary(map);
-//	}
+	@Override
+	public int insertSalary(Map<String, Object> map) {
+//		//sal_cla_num , sal_ins id만큼 for문
+//		List<String> list = dao.getIns(map);
+//		for(int i = 0; i<list.size(); i++) {
+//			int n = dao.insertSalary(map);
+//			System.out.println(list.get(i) + "에게 지급완료" + n);
+//		}
+		return dao.insertSalary(map);
+	}
 
 	@Override
 	public int updateClaPeople(Map<String, Object> map) {
 		return dao.updateClaPeople(map);
+	}
+
+	@Override
+	public List<String> getIns(Map<String, Object> map) {
+		return dao.getIns(map);
 	}
 
 }

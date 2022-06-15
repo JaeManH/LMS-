@@ -52,7 +52,7 @@ public class payController{
 	
 	//결제완료시 결제완료 페이지로 이동
 	@RequestMapping(value = "/paySuccess.do", method = RequestMethod.GET)
-	public String paySuccess(Model model,String paynum,String finalAmount,String plusMile,Authentication user) {
+	public String paySuccess(Model model,String paynum,String finalAmount,String plusMile,Authentication user,String claNum) {
 		logger.info("--------결제성공 이동 ---------");
 		System.out.println(paynum);
 		System.out.println(finalAmount);
@@ -75,7 +75,9 @@ public class payController{
 		//수강자 등록하기
 		Map<String, Object> claMap = new HashMap<String, Object>();
 		claMap.put("tra_id", user.getPrincipal());
+		claMap.put("claNum", claNum);
 		int claResult = service.updateClaPeople(claMap);
+		
 		System.out.println("수강자 등록 확인 !!"+claResult);
 		//회원 전화번호 가져오기
 		Map<String, Object> phoneMap = new HashMap<String, Object>();
