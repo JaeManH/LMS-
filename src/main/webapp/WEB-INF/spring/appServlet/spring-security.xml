@@ -57,7 +57,10 @@
 		<security:logout invalidate-session="true" 
 		logout-url="/app/logout.do" 
 		logout-success-url="/loginPage.do?logout" delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"/>
-	
+		<security:session-management invalid-session-url="/app/loginPage.do">
+			<security:concurrency-control max-sessions="1" 
+			expired-url="/app/duplicateLogin.do" error-if-maximum-exceeded="false"/>
+		</security:session-management>
 	
 		</security:http>
 
@@ -160,7 +163,7 @@
 			로그인이 중복되었을 때 새로운 세션으로 교체하려면  false 
 			기존 세션을 유지하려면 true
 		 -->
-		<security:session-management invalid-session-url="/loginPage.do">
+		<security:session-management invalid-session-url="/app/loginPage.do">
 			<security:concurrency-control max-sessions="1" 
 			expired-url="/user/duplicateLogin.do" error-if-maximum-exceeded="false"/>
 		</security:session-management>
@@ -240,7 +243,7 @@
 			로그인이 중복되었을 때 새로운 세션으로 교체하려면  false 
 			기존 세션을 유지하려면 true
 		 -->
-		<security:session-management invalid-session-url="/loginPage.do">
+		<security:session-management invalid-session-url="/app/loginPage.do">
 			<security:concurrency-control max-sessions="1" 
 			expired-url="/ins/duplicateLogin.do" error-if-maximum-exceeded="false"/>
 		</security:session-management>
