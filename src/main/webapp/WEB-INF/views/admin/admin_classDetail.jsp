@@ -91,7 +91,14 @@ function selectAll(selectAll)  {
                           <ul class="blog-social">
                             <li>${result.cla_startdate}</li>
                             <li><i class="icofont icofont-user"></i></li>
+                            <sec:authorize access="isAnonymous()">
+
+                            <li  style="cursor: pointer;" onclick="javascript:alert('로그인해야 가능합니다.')"><i class="icofont icofont-thumbs-up" ></i><span id="likeCnt">${result.cla_like}</span></li>
+                            </sec:authorize>
+                            <sec:authorize access="isAuthenticated()">
+
                             <li id="likeBtn" style="cursor: pointer;"><i class="icofont icofont-thumbs-up" ></i><span id="likeCnt">${result.cla_like}</span></li>
+                            </sec:authorize>
                             <li><i class="icofont icofont-ui-chat"></i>${result.cla_status}</li>
                           </ul>
                           <h4>
