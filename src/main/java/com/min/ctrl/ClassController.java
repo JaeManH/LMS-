@@ -172,7 +172,6 @@ public class ClassController {
 //		String classNum = classVo.getCla_num();
 		
 		map.clear();
-		//TODO 과정 태그 넣기
 		for (String listed : subList) {
 			map.put("csu_sub_num", listed);
 			map.put("vot_sub_num", listed);
@@ -201,10 +200,11 @@ public class ClassController {
 	@RequestMapping(value = "/classModifyForm.do", method = RequestMethod.GET)
 	public String classModifyForm(@SessionAttribute("cla_num") String cla_num, Model model) {
 		logger.info("classModifyForm : 과정 수정 화면이동");
-		LocalDate myNow = LocalDate.now();
-		LocalDate now = LocalDate.of(myNow.getYear(), myNow.getMonth(), myNow.getDayOfMonth()+15);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 15); // one day increment
+		String result = String.valueOf(cal.get(Calendar.YEAR))+"-"+ String.format("%02d", cal.get(Calendar.MONTH)+1)+"-"+String.format("%02d", cal.get(Calendar.DATE));
 		
-		model.addAttribute("now", now.toString());
+		model.addAttribute("now", result);
 		return "admin/admin_classModifyForm";
 	}
 	
@@ -334,7 +334,7 @@ public class ClassController {
 		System.out.println(month);
 		System.out.println(date);
 		
-		return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
+		return "redirect:/user/classListForm.do";
 	}
 	
 	
@@ -463,14 +463,19 @@ public class ClassController {
 			System.out.println("널값 체크 : "+list.get(i).getVot_voter());
 			System.out.println("널값 체크용 서브 : "+list.get(i).getVot_sub_num());
 			if(list.get(i).getVot_voter()==null) {
-				System.out.println("삭제해야대용 : "+list.get(i).getVot_sub_num());
+				System.out.println("삭제 : "+list.get(i).getVot_sub_num());
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("vot_cla_num", "CLA032");
 				map.put("vot_sub_num", list.get(i).getVot_sub_num());
 				service.voteDelete(map);
 			}
 		}
-			return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
+		
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("cla_num", cla_num);
+			map.put("cla_status", "개강전");
+			service.classStatusUpdate(map);
+			return "redirect:/user/classListForm.do";
 		}
 	
 	
@@ -604,7 +609,7 @@ public class ClassController {
 			voed.setCpe_mem_id(user.getPrincipal().toString());
 			int n = service.classPeoSelectAll(voed);
 			if(n>0) {
-				return "redirect:/user/classSelectDetail.do?cla_num="+cla_num;
+				return "redirect:/app/classSelectDetail.do?cla_num="+cla_num;
 			}else {
 				mapped.put("cpe_mem_id", user.getPrincipal());
 				mapped.put("cpe_cla_num", cla_num);

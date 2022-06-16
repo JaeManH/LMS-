@@ -36,4 +36,12 @@ public interface IStatisticsDao {
     public List<ClassVo> selectClassList(List<String> id);
 
     public List<SubjectVo> selectSubjectList(List<String> id);
+
+    public String selectSubjectScore(String id);
+
+    public int updateSubjectScore(Map<String,Object> map);
+
+    public String selectSubjectTitle(String id);
+
+
 }

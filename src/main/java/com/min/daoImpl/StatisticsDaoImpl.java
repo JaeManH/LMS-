@@ -67,4 +67,22 @@ public class StatisticsDaoImpl implements IStatisticsDao {
     public List<SubjectVo> selectSubjectList(List<String> id) {
         return session.selectList(NS+"selectSubjectList",id);
     }
+
+    @Override
+    public String selectSubjectScore(String id) {
+        return session.selectOne(NS+"selectSubjectScore",id);
+    }
+
+    @Override
+    public int updateSubjectScore(Map<String, Object> map) {
+        return session.update(NS+"updateSubjectScore",map);
+    }
+
+    @Override
+    public String selectSubjectTitle(String id) {
+        return session.selectOne(NS+"selectSubjectTitle",id);
+    }
+
+
 }
+

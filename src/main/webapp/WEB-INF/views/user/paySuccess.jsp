@@ -6,6 +6,7 @@
 <title>결제완료</title>
 </head>
 <%@ include file="../header.jsp" %>
+
 <body>
   
         <div class="page-body">
@@ -56,6 +57,13 @@
                   		<br><br>
                   		<h1 class="display-1"><i class="fa fa-shopping-bag"></i></h1><br><br>
                   		<h4 class="f-w-600"><span style="color:tomato"><b>${finalAmount}</b></span>원 결제가 성공적으로 <span style="color:tomato"><b>완료</b></span>되었습니다.</h4><br>
+                  		<ul>
+                  			<li><i class="fa fa-caret-right txt-secondary m-r-10"></i><span style="color:tomato"><b>${plusMile}</b></span>p가 마일리지로 적립되었습니다.</li>
+                  			<c:if test="${coupon ne '0'}">
+                  			<li><i class="fa fa-caret-right txt-secondary m-r-10"></i><span style="color:tomato"><b>${coupon}</b></span>이 발급되었습니다.</li>
+                  			</c:if>
+                  		</ul>
+                  		<br><br>
                   		<h5 class="f-w-600">회원님의 결제번호는 <span style="color:tomato"><b>${paynum}</b></span> 입니다.</h5><br><br>
                   		<button class="btn btn-primary btn-lg" type="button">마이페이지로 가기</button>&nbsp;&nbsp;
                   		<button class="btn btn-warning btn-lg" type="button">강좌설명으로 가기</button><br><br><br><br>

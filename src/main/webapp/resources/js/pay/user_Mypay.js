@@ -8,7 +8,9 @@ function modalOpen(paynum){
 				paynum : paynum
 			},success:function(data){
 				console.log("성공이다");
-				console.log(data);
+				console.log(typeof data);
+				var j = JSON.stringify(data)
+				console.log(j);
 				var noCoupon;
 				if(data.pay_ucounum == null){
 					 noCoupon = "사용안함";
@@ -57,7 +59,17 @@ function cancelUpdate(){
 	var canReason = getContent.value;
 	var getPayNumber = payNumber.innerText;
 	if(getCate.innerText == "카테고리를 선택해주세요"){
-		alert("카테고리를 선택해주세요");
+		Swal.fire({
+				      icon: 'error',
+					  title : 'Check Please!',
+				      text: "카테고리를 선택해주세요",
+				    });
+	}else if(canReason==""){
+		Swal.fire({
+				      icon: 'error',
+					  title : 'Check Please!',
+				      text: "환불사유를 입력해주세요!",
+				    });
 	}else{
 		$('#cancelWhy').modal('hide');
 		$.ajax({
@@ -71,8 +83,14 @@ function cancelUpdate(){
 		},success:function(){
 		}
 		})
-		alert("환불신청이 완료되었습니다.");
-		location.href = "./user_Mypay.do";
+		Swal.fire({
+				      icon: 'success',
+					  title : 'Refund Success',
+				      text: "환불신청이 완료되었습니다!",
+				    }).then(function(){
+					location.href = "./user_Mypay.do";
+				})
+		
 	}
 	
 }

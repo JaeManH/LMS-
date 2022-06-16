@@ -74,4 +74,9 @@ public class ITagServiceImpl implements ITagService {
     public String selectSubjectTag(String id) {
         return dao.selectSubjectTag(id);
     }
+
+    @Override
+    public String selectTagSubjectCode(String code) {
+        return dao.selectTagSubjectCode(code);
+    }
 }

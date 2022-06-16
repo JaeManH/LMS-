@@ -10,6 +10,7 @@
   <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.8.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous" type="text/javascript"></script>
   <script type="text/javascript" src="../resources/js/pay/pay.js"></script>
+  <%@ include file="../payAlert.jsp" %>
   <style type="text/css">
 	table{
 		text-align:center;
@@ -65,8 +66,13 @@
                   </div>
                   <div class="card-body">
                   	<h5>Class info &nbsp;&nbsp;<small class="text-muted">강좌정보</small></h5><br>
-                    <h6 class="card-title">JSP과정</h6><br>
-                    <p>&nbsp; jsp과정 설명은 ~~이다</p> 
+                    <h6 class="card-title" id="claTitle">입문자도 할 수 있는 JSP 과정</h6><br>
+                    <ul>
+                    	<li>
+                    		<div id="claContent"><i class="fa fa-angle-double-right txt-primary m-r-10"></i>이 과정은 jsp 입문자도 쉽게 접근할수 있도록 커리큘럼이 짜진 강의이며 jsp와 Servlet에 중점적인 과목들이 포함되어 있습니다.</div>
+                    	</li>
+                    </ul>
+                    
                     <hr>
                     <h5>Pay info &nbsp;&nbsp;<small class="text-muted">금액정보</small></h5><br>
                     <dl class="row">
@@ -81,7 +87,8 @@
 					</dl>
 					<br>
 					<h5>Coupon &nbsp;&nbsp;<small class="text-muted">쿠폰사용</small></h5><br>
-					<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" >쿠폰 사용하기</button><br><br>
+					<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal" >쿠폰 사용하기</button><br>
+					<br>
 					<!-- 모달모달 -->
 					<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
                       <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -126,8 +133,10 @@
                     </div>
                     <!-- 모달 끝 -->
                     <div class ="btns">
-	 					<h5>Milage&nbsp;&nbsp;<small class="text-muted">마일리지 사용</small></h5><br><input type="number" name="milage" id="milage">&nbsp;
-	 					<button class="btn btn-info btn-sm" type="button" onclick="useMilage()">사용하기</button><br><br>
+	 					<h5>Milage&nbsp;&nbsp;<small class="text-muted">마일리지 사용</small></h5><br><input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"  placeholder="0p" name="milage" id="milage">&nbsp;
+	 					<button class="btn btn-info btn-sm" type="button" onclick="useMilage()">사용하기</button><br>
+	 					<small class="text-muted">회원님의 보유 마일리지는 <b><span style="color:tomato" id="mile">${mile}</span> point</b> 입니다.</small>
+	 					<br>
 						<br>
 						<h5>Method of payment &nbsp;&nbsp;<small class="text-muted">결제방식 선택</small></h5><br>
 					 	<input type="radio" name="selectPay" value="payco" checked="checked">&nbsp;페이코&nbsp;&nbsp;<img src="../resources/images/pay/payco.png"/>&nbsp;&nbsp;&nbsp;&nbsp;

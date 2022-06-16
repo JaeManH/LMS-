@@ -15,4 +15,7 @@ public interface ITagService {
     public int updateTag(Map<String, Object> map);
 
     public String selectSubjectTag(String id);
+
+    public String selectTagSubjectCode(String code);
+
 }

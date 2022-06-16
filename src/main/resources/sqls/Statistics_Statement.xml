@@ -55,7 +55,7 @@
         FROM CLASS
         WHERE CLA_NUM = #{num}
     </select>
-<!-- 과정 리스트 in절 검색 -->
+    <!-- 과정 리스트 in절 검색 -->
     <select id="selectClassList" resultType="ClassVo">
         SELECT CLA_NUM , CLA_TITLE , CASE WHEN LENGTH(CLA_CONTENT) > 30 THEN SUBSTR(CLA_CONTENT,0,30) || '...' ELSE
         CLA_CONTENT END CLA_CONTENT, TO_CHAR(CLA_STARTDATE,'YYYY-MM-DD') AS CLA_STARTDATE,
@@ -67,11 +67,12 @@
         </foreach>
         ORDER BY CLA_NUM
     </select>
-<!--  과목 리스트 in절 검색  -->
-    <select id="selectSubjectList" resultType="SubjectVo" >
-        SELECT  SUB_NUM, SUB_TITLE, SUB_CONTENT, SUB_REG_ID, COD_NAME,SUB_INS,SUB_REGDATE
+    <!--  과목 리스트 in절 검색  -->
+    <select id="selectSubjectList" resultType="SubjectVo">
+        SELECT SUB_NUM, SUB_TITLE, SUB_CONTENT, SUB_REG_ID, COD_NAME,SUB_INS,SUB_REGDATE
         FROM (
-        SELECT RN, SUB_NUM, SUB_TITLE, CASE WHEN LENGTH(SUB_CONTENT)>80 THEN SUBSTR(SUB_CONTENT, 0,80)|| '...' ELSE SUB_CONTENT END SUB_CONTENT,
+        SELECT RN, SUB_NUM, SUB_TITLE, CASE WHEN LENGTH(SUB_CONTENT)>80 THEN SUBSTR(SUB_CONTENT, 0,80)|| '...' ELSE
+        SUB_CONTENT END SUB_CONTENT,
         SUB_REGDATE, SUB_REG_ID, SUB_INS, SUB_COD_CODE
         FROM (
         SELECT ROW_NUMBER () OVER(ORDER BY SUB_REGDATE DESC) RN, s.SUB_NUM , s.SUB_TITLE ,
@@ -87,4 +88,59 @@
             #{id}
         </foreach>
     </select>
+    <!--  과목평점을 가져오기  -->
+    <select id="selectSubjectScore" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT SUB_SCORE
+        FROM SUBJECT
+        WHERE SUB_NUM = #{id}
+    </select>
+    <!--  과목 평점을 업데이트  -->
+    <update id="updateSubjectScore" parameterType="java.util.Map">
+        UPDATE SUBJECT
+        SET SUB_SCORE = #{score}
+        WHERE SUB_NUM = #{id}
+    </update>
+
+    <!--  과목 이름 가져오기  -->
+    <select id="selectSubjectTitle" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT SUB_TITLE
+        FROM SUBJECT
+        WHERE SUB_NUM = #{id}
+    </select>
+
+    <!--  메인 화면 최근 등록된 과정 쿼리  -->
+<!--    <select id="">-->
+<!--        SELECT * FROM (-->
+<!--        SELECT CLA_NUM , CLA_TITLE , CASE WHEN LENGTH(CLA_CONTENT) > 30 THEN SUBSTR(CLA_CONTENT,0,30) || '...' ELSE-->
+<!--        CLA_CONTENT END CLA_CONTENT, TO_CHAR(CLA_STARTDATE,'YYYY-MM-DD') AS CLA_STARTDATE,-->
+<!--        CLA_DAILYTIME , CLA_TOTALTIME, CLA_MAXPEO , CLA_PRICE, JSON_QUERY(CLA_LIKE ,'$' RETURNING VARCHAR2) AS CLA_LIKE,-->
+<!--        CLA_STATUS-->
+<!--        FROM CLASS c-->
+<!--        ORDER BY CLA_NUM DESC) WHERE ROWNUM<=10-->
+<!--    </select>-->
+<!--    &lt;!&ndash;  과정 추천을 위한 쿼리  &ndash;&gt;-->
+<!--    &lt;!&ndash;  과정 조건들 찾는 쿼리  &ndash;&gt;-->
+<!--    <select id="">-->
+<!--        SELECT CLA_NUM, CLA_REGDATE, CLA_ENDRECRUIT, CLA_STATUS, CLA_TOTALTIME-->
+<!--        FROM CLASS-->
+<!--    </select>-->
+<!--    &lt;!&ndash;  과정 조건 찾고 과목 찾기&ndash;&gt;-->
+<!--    <select id="">-->
+<!--        SELECT CSU_CLA_NUM, CSU_SUB_NUM-->
+<!--        FROM CLASS_SUBJECT-->
+<!--        WHERE CSU_CLA_NUM IN-->
+<!--        <foreach collection="list" index="index" item="item" separator="," close=")" open="(">-->
+<!--            #{item}-->
+<!--        </foreach>-->
+<!--    </select>-->
+<!--    &lt;!&ndash;과목에서 조건 찾기&ndash;&gt;-->
+<!--    <select id="">-->
+<!--        SELECT SUB_NUM, SUB_TAG, SUB_INS, SUB_REGDATE-->
+<!--        FROM SUBJECT-->
+<!--        WHERE SUB_NUM IN-->
+<!--        <foreach collection="list" index="index" item="item" separator="," close=")" open="(">-->
+<!--            #{item}-->
+<!--        </foreach>-->
+<!--    </select>-->
+    <!--  메인 화면 추천 강사 띄워주기  -->
 </mapper>

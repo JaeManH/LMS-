@@ -24,7 +24,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
     private IStatisticsDao dao ;
 
     /**
-     * 과목코드를 조회하는 메소드
+     * 과목코드를 조회하는 메소드 과목 입력시 자동완성을 위해 사용됨
      * @return 과목코드 JSON_ARRAY
      */
     @Override
@@ -42,7 +42,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
     @Override
     public int updatePrefer(Map<String, Object> map) {
         logger.info("STAT_001_HJM StatisticsServiceImpl updatePrefer {}",map);
-        return updatePrefer(map);
+        return dao.updatePrefer(map);
     }
 
     /**
@@ -95,20 +95,67 @@ public class StatisticsServiceImpl implements IStatisticsService {
         return classArr.size();
     }
 
+    /**
+     * 특정 유저의 아이디를 검색해 좋아요 리스트를 JSON형식으로 가져온다.
+     * @param id
+     * @return
+     */
     public String selectUserLike(String id){
         logger.info("STAT002_HJM StatisticsServiceImpl selectUserLike 실행");
         return dao.selectUserLike(id);
     }
 
+    /**
+     * IN절을 통해 원하는 클래스들을 조회한다.
+     * @param id
+     * @return
+     */
     @Override
     public List<ClassVo> selectClassList(List<String> id) {
         logger.info("STAT002_HJM StatisticsServiceImpl selectClassList 실행 {]",id);
         return dao.selectClassList(id);
     }
 
+    /**
+     * IN절을 통해 과목 리스트를 조회한다.
+     * @param id
+     * @return
+     */
     @Override
     public List<SubjectVo> selectSubjectList(List<String> id) {
         logger.info("STAT002_HJM StatisticsServiceImpl selectSubjectList 실행 {]",id);
         return dao.selectSubjectList(id);
     }
+
+    /**
+     * 과목의 평점을 조회한다.
+     * @param id
+     * @return
+     */
+    @Override
+    public String selectSubjectScore(String id) {
+        return dao.selectSubjectScore(id);
+    }
+
+    /**
+     * 과목의 평점을 업데이트 한다.
+     * @param map
+     * @return
+     */
+    @Override
+    public int updateSubjectScore(Map<String, Object> map) {
+        return dao.updateSubjectScore(map);
+    }
+
+    @Override
+    public String selectSubjectTitle(String id) {
+        return dao.selectSubjectTitle(id);
+    }
+
+    @Override
+    public void scoreCron() {
+
+    }
+
+
 }

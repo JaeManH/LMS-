@@ -68,8 +68,7 @@ public class UserLoginFailHandler implements AuthenticationFailureHandler {
 	}
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		
+
 		// Request 객체의 Attribute에 사용자가 실패시 입력했던 로그인 ID와 비밀번호를 저장해두어 로그인 페이지에서 이를 접근하도록 한다
 		String loginid = request.getParameter(id);
 		String loginpasswd = request.getParameter(pw);

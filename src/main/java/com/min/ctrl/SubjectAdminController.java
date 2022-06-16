@@ -30,7 +30,6 @@ import com.min.vo.SubjectVo;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Controller
-@RequestMapping(value = "/user/*")
 public class SubjectAdminController {
 	
 
@@ -59,7 +58,7 @@ public class SubjectAdminController {
 //		return mav;
 //	}
 	//2-1) 관리자 과목 전체조회 페이지로 이동 spa방식 페이징까지
-	@RequestMapping(value = "/admin_subjectList.do", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/admin_subjectList.do", method = RequestMethod.GET)
 	public String subjectListAdmin(HttpSession session, Model model,Authentication user) {
 		MemberVo mVo = (MemberVo) session.getAttribute("mem");
 		log.info("SubjectController subjectList");
@@ -122,31 +121,64 @@ public class SubjectAdminController {
 //		return "admin/admin_subjectList";
 //	}
 	//2-2) 관리자 과목 상세조회
-	@RequestMapping(value = "/adminSubjectDetail.do", method = RequestMethod.GET)
-	public String adminSubjectDetail(@RequestParam String sub_num, String id, Model model, HttpSession session) {
-		log.info("********* Welcome SubjectController! adminSubjectDetail 상세조회 subSelectDetail *********");
-		session.setAttribute("sub_num", sub_num);
+	@RequestMapping(value = "/user/admin_subjectDetail.do", method = RequestMethod.GET)
+	public String adminSubjectDetail(SubjectVo sVo, HttpSession session, Model model, @RequestParam String sub_num) {
+		log.info("********* Welcome SubjectController! adminSubjectDetail 상세조회 adminSubjectDetail *********");
 		SubjectVo results = sService.adminSubjectDetail(sub_num);
 		model.addAttribute("results", results);
-		System.out.println(results);
-		return "adminSubjectDetail";
+		
+		return "admin/admin_subjectDetail";
 	}
 	
+	//2-1) 관리자 과목 승인처리 위한 페이징 처리 목록
+	@RequestMapping(value = "/user/admin_subjectApprove.do", method = RequestMethod.GET)
+	public String subSelectToApproveAdmin(HttpSession session, Model model,Authentication user) {
+		MemberVo mVo = (MemberVo) session.getAttribute("mem");
+		log.info("SubjectController subjectList");
+		log.info("SubjectController subjectList 세션확인 : {}", user);
+		MemberVo mvo =(MemberVo) user.getDetails();
 
+		
+		List<SubjectVo> lists = null;
+		RowNumVo rowVo = null;
+		
+		if(session.getAttribute("row")==null) {
+			rowVo = new  RowNumVo();
+		}else {
+			rowVo=(RowNumVo) session.getAttribute("row");
+		}
+		System.out.println(rowVo);
+//		user.getPrincipal();//아이디
+		if(user.getAuthorities().toString().indexOf("ADMIN")!=-1) {
+			System.out.println("***********************subjectAdminController"+user.getAuthorities());
+			System.out.println("***********************subjectAdminController"+mvo);
+			rowVo.setTotal(sService.subjectTotalAdmin());
+			lists=sService.subSelectToApproveAdmin(rowVo);
+		}
+			System.out.println("***********************subjectAdminController"+lists);
+		model.addAttribute("lists",lists);
+		model.addAttribute("row",rowVo);
+		
+		return "admin/admin_subjectApprove";
+	}
+	
+	
 	//3) 관리자의 과목 상태변경
-	@RequestMapping(value = "/subUpdateStatus.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/subUpdateStatusA.do", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, String> subUpdateStatus(@RequestParam Map<String, Object> map){
-		log.info("********* Welcome SubjectController! subUpdateStatus 관리자의 상태변경 subUpdateStatus *********");
-		Map<String, String> rmap = new HashMap<String, String>();
-		boolean isc =  sService.subUpdateStatusA(map);
-		rmap.put("isc", String.valueOf(isc));
-		return rmap;
+	public String subUpdateStatusA(SubjectVo sVo, String sub_num){
+		log.info("********* Welcome SubjectController! subUpdateStatusA 관리자의 상태변경 subUpdateStatusA *********");
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("sub_num", sub_num);
+		
+			int n =  sService.subUpdateStatusA(map);
+			System.out.println("상태가 업데이트 된 과목 수 : "+ n);
+		
+		return "redirect:/user/admin_subjectApprove.do;";
 	}
-
-
-
+		
 
 	
+
 
 }

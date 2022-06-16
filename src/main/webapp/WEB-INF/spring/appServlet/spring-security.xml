@@ -22,17 +22,40 @@
 <!-- 		<security:password-encoder ref="passwordEncoder" /> -->
 	</security:authentication-provider>	
 </security:authentication-manager>	
+	 <security:http auto-config="true" pattern="/*" use-expressions="true" >
+     <security:intercept-url pattern="./assets/**" access="permitAll" />
+	    <security:intercept-url pattern="./assets/**" access="permitAll" />
+		<security:intercept-url pattern="./js/**" access="permitAll" />
+		<security:intercept-url pattern="./css/**" access="permitAll" />
+		<security:intercept-url pattern="./images/**" access="permitAll" />
+		<security:intercept-url pattern="/**" access="permitAll" />
+		
 	
-	
-<!-- /////////////////////////////////  main  ////////////////////////////////////// -->
-<security:http auto-config="true" pattern="/*" use-expressions="true" >
-		<security:intercept-url pattern="/assets/**" access="permitAll" />
-		<security:intercept-url pattern="/main.do" access="permitAll" />
-		<security:intercept-url pattern="/user_subjectList.do" access="permitAll" />
+		
 <!-- 				<security:intercept-url pattern="/user/**" access="permitAll"/> -->
 		
 		<security:logout invalidate-session="true" 
 		logout-url="/logout.do" 
+		logout-success-url="/loginPage.do?logout" delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"/>
+	
+	
+		</security:http>
+	
+<!-- /////////////////////////////////  main  ////////////////////////////////////// -->
+    <security:http auto-config="true" pattern="/app/**" use-expressions="true" >
+     <security:intercept-url pattern="./assets/**" access="permitAll" />
+	    <security:intercept-url pattern="../assets/**" access="permitAll" />
+		<security:intercept-url pattern="../js/**" access="permitAll" />
+		<security:intercept-url pattern="../css/**" access="permitAll" />
+		<security:intercept-url pattern="../images/**" access="permitAll" />
+		<security:intercept-url pattern="/app/**" access="permitAll" />
+		
+	
+		
+<!-- 				<security:intercept-url pattern="/user/**" access="permitAll"/> -->
+		
+		<security:logout invalidate-session="true" 
+		logout-url="/app/logout.do" 
 		logout-success-url="/loginPage.do?logout" delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"/>
 	
 	
@@ -47,27 +70,42 @@
 	
 <!-- /////////////////////////////////  user  ////////////////////////////////////// -->
 <security:http auto-config="true" pattern="/user/**" use-expressions="true" authentication-manager-ref="userAuthManager">
-		<security:intercept-url pattern="/assets/**" access="permitAll" />
-		<security:intercept-url pattern="/js/**" access="permitAll" />
-		<security:intercept-url pattern="/css/**" access="permitAll" />
-		<security:intercept-url pattern="/images/**" access="permitAll" />
+		<security:intercept-url pattern="../assets/**" access="permitAll" />
+		<security:intercept-url pattern="../js/**" access="permitAll" />
+		<security:intercept-url pattern="../css/**" access="permitAll" />
+		<security:intercept-url pattern="../images/**" access="permitAll" />
 		<!-- 정적 리소스는 모두 접근 허용 -->
 <!-- 		<security:intercept-url pattern="/assets/**/**" access="permitAll" /> -->
-	<security:intercept-url pattern="/**" access="permitAll" /> 
-		<!-- 전체허용.? -->
-		<security:intercept-url pattern="/user/*.do" access="permitAll"/>
-	
-		<security:access-denied-handler error-page="/user/AuthError.do"/>
 		
-		<security:intercept-url pattern="/user/myProfile.do" access="permitAll"/>
 		<security:intercept-url pattern="/user/loginPage.do" access="permitAll"/>
-		<security:intercept-url pattern="/user/uploadAjaxAction.do" access="permitAll"/>
-		<security:intercept-url pattern="/user/page.do" access="hasRole('ADMIN')"/>
+		<security:intercept-url pattern="/user/traSignUp.do" access="permitAll"/>
+		<security:intercept-url pattern="/user/reMain.do" access="permitAll"/>
+		<security:intercept-url pattern="/user/main.do" access="permitAll"/>
+		<security:intercept-url pattern="/user/findTraIdView.do" access="permitAll"/>
+		<security:intercept-url pattern="/user/**" access="permitAll"/>
 		
-		<security:intercept-url pattern="/user/adminTraList.do" access="hasRole('ADMIN')"/>
-		<security:intercept-url pattern="/user/**" access="hasRole('USER')"/>
-		<security:intercept-url pattern="/user/**" access="hasRole('ADMIN')"/>
-		<security:intercept-url pattern="/user/admin/**" access="hasRole('ADMIN')"/>
+		
+		<!-- 전체허용.? -->
+		<security:intercept-url pattern="/user/*.do" access="hasRole('USER')"/>
+	<security:access-denied-handler error-page="/user/AuthError.do"/>
+<!-- 		<security:access-denied-handler error-page="/user/AuthError.do"/> -->
+<!-- 		<security:intercept-url pattern="/user/*.do" access="hasRole('USER')"/> -->
+		
+<!-- 		<security:intercept-url pattern="/user/myProfile.do" access="permitAll"/> -->
+<!-- 		<security:intercept-url pattern="/user/findTraId.do" access="permitAll"/> -->
+<!-- 		<security:intercept-url pattern="/user/idCheck.do" access="permitAll"/> -->
+<!-- 		<security:intercept-url pattern="/user/page.do" access="hasRole('ADMIN')"/> -->
+<!-- 		<security:intercept-url pattern="/user/updateProfile.do" access="permitAll"/> -->
+		
+<!-- 		<security:intercept-url pattern="/user/adminTraList.do" access="hasRole('ADMIN')"/> -->
+<!-- 		<security:intercept-url pattern="/user/**" access="hasRole('USER')"/> -->
+<!-- 		<security:intercept-url pattern="/user/**" access="hasRole('ADMIN')"/> -->
+<!-- 		<security:intercept-url pattern="/user/admin/**" access="hasRole('ADMIN')"/> -->
+
+<!--                 <security:intercept-url pattern="/user/user_subjectDetail.do" access="permitAll"/> -->
+<!-- 		<security:intercept-url pattern="/user/user_mySubjectList.do" access="permitAll"/> -->
+<!-- 		<security:intercept-url pattern="/user/admin_subjectDetail.do" access="hasRole('ADMIN')"/> -->
+
 <!-- 		<security:intercept-url pattern="/**" access="permitAll"/> -->
 <!-- 		login-processing-url="/logingo.do"  -->
 
@@ -97,7 +135,7 @@
 		 -->
 		<security:logout invalidate-session="true" 
 		logout-url="/user/logout.do" 
-		logout-success-url="/loginPage.do?logout" delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"/>
+		logout-success-url="/app/loginPage.do?logout" delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"/>
 		
 		<!-- 
 		  세션이 유지되는 시간(초) : 기본 - 2주 3600(60초*60) = 한시간
@@ -137,14 +175,19 @@
 	
 <!-- /////////////////////////////////  Instructor  ////////////////////////////////////// -->
 <security:http auto-config="true" pattern="/ins/**" use-expressions="true" authentication-manager-ref="InsAuthManager">
-		<security:intercept-url pattern="/assets/**" access="permitAll" />
+		<security:intercept-url pattern="../assets/**" access="permitAll" />
+		<security:intercept-url pattern="../js/**" access="permitAll" />
+		<security:intercept-url pattern="../css/**" access="permitAll" />
+		<security:intercept-url pattern="../images/**" access="permitAll" />
 		<!-- 정적 리소스는 모두 접근 허용 -->
 <!-- 		<security:intercept-url pattern="/assets/**/**" access="permitAll" /> -->
-	<security:intercept-url pattern="/**" access="permitAll" /> 
-		<security:access-denied-handler error-page="/user/AuthError.do"/>
-		<security:intercept-url pattern="/ins/InsloginPage.do" access="permitAll"/>
-		<security:intercept-url pattern="/ins/**" access="hasRole('INSTRUCTOR')"/>
-	<security:intercept-url pattern="/ins/main.do" access="permitAll"/>
+	
+		<security:access-denied-handler error-page="/ins/AuthError.do"/>
+		<security:intercept-url pattern="/ins/loginPage.do" access="permitAll"/>
+		<security:intercept-url pattern="/ins/InsSingUpgo.do"  access="permitAll"/>
+		<security:intercept-url pattern="/ins/**"  access="permitAll"/>
+<!-- 		<security:intercept-url pattern="/ins/**" access="hasRole('INSTRUCTOR')"/> -->
+<!-- 	<security:intercept-url pattern="/ins/main.do" access="permitAll"/> -->
 <!-- 		<security:intercept-url pattern="/**" access="permitAll"/> -->
 <!-- 		login-processing-url="/logingo.do"  -->
 
@@ -172,7 +215,7 @@
 		 -->
 		<security:logout invalidate-session="true" 
 		logout-url="/ins/logout.do" 
-		logout-success-url="/loginPage.do?logout" delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"/>
+		logout-success-url="/app/loginPage.do?logout" delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"/>
 		
 		<!-- 
 		  세션이 유지되는 시간(초) : 기본 - 2주 3600(60초*60) = 한시간

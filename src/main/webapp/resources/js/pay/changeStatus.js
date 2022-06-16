@@ -89,12 +89,25 @@ function statusUpdate(paynum){
 	if(paynum == 0){
 		const getcanCate = document.getElementById('payNumber');
 		var getPayNumber = getcanCate.innerText;
-		location.href="./statusUpdate.do?paynum="+getPayNumber;
-		importCancel(paynum);
+		console.log(getPayNumber);
+		Swal.fire({
+				      icon: 'success',
+					  title : 'Refund Success',
+				      text: "환불이 완료되었습니다!",
+				    }).then(function(){
+					location.href="./statusUpdate.do?paynum="+getPayNumber;
+				})
+		importCancel(getPayNumber);
 	}else{
-		location.href="./statusUpdate.do?paynum="+paynum;
+		Swal.fire({
+				      icon: 'success',
+					  title : 'Refund Success',
+				      text: "환불이 완료되었습니다!",
+				    }).then(function(){
+					location.href="./statusUpdate.do?paynum="+paynum;
+				})
 		importCancel(paynum);
 	}
 	
-	alert("환불 완료되었습니다!");
+	
 }

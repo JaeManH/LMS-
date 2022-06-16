@@ -11,6 +11,7 @@ $( function() {
 	    success : function(sub) {
 	        console.log("통신 성공");
 	       searchSource =JSON.parse(sub);
+           console.log(searchSource);
 	    },
 	    error: function(){
 	        console.log("통신실패");
@@ -25,7 +26,7 @@ $( function() {
           if(isc){
               return false;
           }
-          $("#selSub").append("<div class='subName'><em class='tag_text'>"+ui.item.label+"<img class='cancelImg' src='./resources/images/statistics/cancel.png'></em><input type='hidden' value='"+ui.item.value+"' name='subjects'/></div>");
+          $("#selSub").append("<div class='subName'><em class='tag_text'>"+ui.item.label+"<img class='cancelImg' src='../resources/images/statistics/cancel.png'></em><input type='hidden' value='"+ui.item.value+"' name='subjects'/></div>");
       },
       focus : function(event, ui) { // 포커스 시 이벤트
           return false;
@@ -52,9 +53,23 @@ $( function() {
 //선호조사 폼 유효성 검사
 function preferCheck(){
     var cnt = document.getElementsByClassName("subName");
+    var time = $("#time option:selected").val();
+    var date = $("#date option:selected").val();
+    var difficulty = $("#difficulty option:selected").val();
+    if(difficulty==0){
+        alert("선호하는 난이도를 선택해 주세요");
+        return false;
+    }
     if(cnt.length<3){
-        alert("원하시는 과목을 3개이상 선택해주세요");
-        console.log(cnt.length);
+        alert("선호하는 과목을 3개이상 선택해주세요");
+        return false;
+    }
+    if(time==0){
+        alert("선호하는 시간을 선택해주세요");
+        return false;
+    }
+    if(date==0){
+        alert("선호하는 기간을 선택해주세요");
         return false;
     }
     document.getElementById("preferForm").submit();

@@ -52,15 +52,15 @@ function insertForm(){
           <div class="col-sm-12">
             <div class="card">
               <div class="card-header">
-              <c:if test="${mes_cate eq 'Q' or mes_cate eq null}">
+              <c:if test="${mes_cate eq 'Q'}">
                 <h5>보낸 쪽지함</h5>
               </c:if>
-              <c:if test="${mes_cate eq 'R'}">
+              <c:if test="${mes_cate eq 'R' or mes_cate eq null}">
                 <h5>받은 쪽지함</h5>
               </c:if>
                 <select class="form-select digits" id="mes_cate " name="mes_cate" style="width: 100px; float: right;" onchange="changeCate(this.options[selectedIndex].value)">
-                	<option class="" id="ask" value="Q" <c:if test="${mes_cate == 'Q'}">selected="selected"</c:if>>보낸 쪽지</option>
                 	<option class="" id="req" value="R" <c:if test="${mes_cate == 'R'}">selected="selected"</c:if>>받은 쪽지</option>
+                	<option class="" id="ask" value="Q" <c:if test="${mes_cate == 'Q'}">selected="selected"</c:if>>보낸 쪽지</option>
                 </select>
                 <input id="insertFrom" style="float: right; margin-right: 30px;" class="btn btn-primary" onclick="insertForm()" value="글 등록하기">
 <!--                  <div> -->

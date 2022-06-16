@@ -21,4 +21,12 @@ public interface IStatisticsService {
 
     public List<SubjectVo> selectSubjectList(List<String> id);
 
+    public String selectSubjectScore(String id);
+
+    public int updateSubjectScore(Map<String,Object> map);
+
+    public String selectSubjectTitle(String id);
+
+    public void scoreCron();
+
 }

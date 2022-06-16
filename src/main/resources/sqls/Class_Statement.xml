@@ -141,7 +141,7 @@ UPDATE CLASS SET CLA_TOTALTIME = (SELECT SUM(CUR_TIME)
 UPDATE CLASS SET CLA_STATUS = '투표중' WHERE TO_CHAR(SYSDATE,'YYYY-MM-dd') = TO_CHAR(CLA_ENDRECRUIT,'YYYY-MM-dd')
 </update>
 <update id="endVote">
-UPDATE CLASS SET CLA_STATUS = '개강전' WHERE TO_CHAR(SYSDATE,'YYYY-MM-dd') = TO_CHAR(CLA_ENDVOTE,'YYYY-MM-dd');
+UPDATE CLASS SET CLA_STATUS = '승인중' WHERE TO_CHAR(SYSDATE,'YYYY-MM-dd') = TO_CHAR(CLA_ENDVOTE,'YYYY-MM-dd');
 </update>
 <update id="classStart">
 UPDATE CLASS SET CLA_STATUS = '강의중' WHERE TO_CHAR(SYSDATE,'YYYY-MM-dd') = TO_CHAR(CLA_STARTDATE,'YYYY-MM-dd')
@@ -315,10 +315,10 @@ DELETE FROM CLASS_BOARD
 <select id="messendBoardSelectAll" resultType="MessageBoardVo" parameterType="MessageBoardVo">
 SELECT MES_SEQ , MES_SENDER , MES_RECIPIENT , CASE WHEN LENGTH(MES_CONTENT) > 15 THEN SUBSTR(MES_CONTENT,0,15) || '...' ELSE MES_CONTENT END MES_CONTENT ,  MES_CATE , MES_REFFER , MES_REGDATE 
 	FROM MESSAGE_BOARD
-	<if test="mes_cate == 'Q'.toString() or  mes_cate =='null'">
+	<if test="mes_cate == 'Q'.toString()">
 	WHERE MES_CATE = #{mes_cate} AND MES_SENDER = #{mes_sender}
 	</if>
-	<if test="mes_cate == 'R'.toString()">
+	<if test="mes_cate == 'R'.toString() or  mes_cate =='null'">
 	WHERE MES_CATE = #{mes_cate} AND MES_RECIPIENT = #{mes_recipient}
 	</if>
 	ORDER BY MES_REFFER
@@ -336,9 +336,11 @@ INSERT INTO MESSAGE_BOARD (MES_SEQ, MES_SENDER, MES_RECIPIENT,
 						   MES_CONTENT,MES_CATE, MES_REFFER,
 						   MES_REGDATE, MES_READ)
 	 			   VALUES (MESSAGE_BOARD_SEQ.NEXTVAL, #{mes_sender}, #{mes_recipient}, 
-			 			   #{mes_content},'Q', (SELECT MAX(MES_REFFER)+1 FROM MESSAGE_BOARD) ,
+			 			   #{mes_content},#{mes_cate}, (SELECT MAX(MES_REFFER)+1 FROM MESSAGE_BOARD) ,
 			 			   SYSDATE, 'N')
 </insert>
+
+
 
 <insert id="mesBoardReply" parameterType="java.util.Map">
 INSERT INTO MESSAGE_BOARD d(MES_SEQ, MES_SENDER, MES_RECIPIENT,

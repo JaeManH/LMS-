@@ -82,7 +82,6 @@ public class RowNumVo implements Serializable{
    }
    
    public RowNumVo() {
-      // TODO Auto-generated constructor stub
    }
 
    public int getPageList() {

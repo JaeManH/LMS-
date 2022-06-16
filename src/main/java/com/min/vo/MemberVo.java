@@ -21,14 +21,19 @@ public class MemberVo {
 	private String phone;
 	private String auth;
 	private String profile;
+	private String like;
+	private String prefer;
 	private String milage;
 	private String bank;
 	private String banknum;
 	private String career;
 	private String delflag;
 	private String regdate;
-	private String like;
-	private String prefer;
-	
+	private String car_file;
+	private String car_depart;
+	private String car_position;
+	private String car_period;
+	private String car_content;
+
 
 }

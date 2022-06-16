@@ -73,8 +73,8 @@ public class IamportController {
 	
 	//결제 및 insert
 	@PostMapping("pay.do")
-	public void getPay(String merchant_uid, String imp_uid,String payRow,String payDiscount,int payUmilage,String payCounum,Authentication user) {
-		System.out.println("merchant_uid 는 ?? : " + merchant_uid);
+	public void getPay(String merchant_uid, String imp_uid,String payRow,String payDiscount,int payUmilage,String payCounum,Authentication user,int payPlusMilage) {
+		System.out.println("merchant_uid 는 ?? : " + merchant_uid + "pay : "+payPlusMilage);
 		System.out.println("imp_uid는 ?? : " + imp_uid); //주문번호
 		try {
 			//payco와 kcp만 지원
@@ -123,7 +123,8 @@ public class IamportController {
 			mileMap.put("useMilage", payUmilage);
 			mileMap.put("tra_id", user.getPrincipal());
 			service.updateMileage(mileMap);
-			
+			map.put("plusMileage", payPlusMilage);
+			map.put("tra_id", user.getPrincipal());
 			//insert 가자
 			int n = service.payInsert(map);
 			System.out.println(n + "@@@!!@@@@@@@@");
@@ -168,7 +169,6 @@ public class IamportController {
                     break;
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

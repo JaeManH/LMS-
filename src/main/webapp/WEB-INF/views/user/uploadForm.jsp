@@ -5,10 +5,31 @@
 <head>
 <meta charset="UTF-8">
 <title>일반회원 과목 등록 양식 페이지</title>
+<style type="text/css">
+.uploadResult {
+	width:100%;
+	background-color:gray;
+
+}
+.uploadResult ul{
+	display:flex;
+	flex-flow:row;
+	justify-content: center;
+	align-items: center;
+}
+.uploadResult ul li{
+	list-style: none;
+	padding: 10px;
+}
+.uploadResult ul li img{
+	width:20px;
+}
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 <%@ include file="../header.jsp"%>
+
 <body>
 	<div class="page-body">
 		<div class="container-fluid">
@@ -91,26 +112,8 @@
 						}else{
 							console.log("파일 종류 체크 완료");
 							return true;
-						}
+						}j
 	}
-	
-	var uploadResult = $(".uploadResult ul");
-		function showuploadedFile(uploadResultArr){
-			var str = "";
-			$(uploadResultArr).each(function(i,obj){
-				if(!obj.image){
-					console.log("파일 이미지 아니다.");
-					str+="<li><i class='icon-save'>"+obj.original_file_name+"</i></li>";
-				}else{
-					console.log("파일 이미지다.");
-					//str += "<li>"+obj.original_file_name+"</li>";
-					var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.original_file_name);
-					str += "<li><img src='/user/display.do?fileName="+fileCallPath+"'></li>";
-				}
-				
-			});
-			uploadResult.append(str);
-		}
 	
 	var cloneObj = $(".uploadDiv").clone();
 	//uploadFile ajax처리부분
@@ -145,8 +148,27 @@
 					alert("파일업로드 실패");
 				}
 			});
-		});
+		});1
 		
+		var uploadResult = $(".uploadResult ul");
+		function showuploadedFile(uploadResultArr){
+			var str = "";
+			$(uploadResultArr).each(function(i,obj){
+				if(!obj.file_type){
+					console.log("파일 이미지 아니다.");
+					console.log(obj.image);
+					var fileCallPath = encodeURIComponent(obj.uploadPath+"/"+obj.uuid+"_"+obj.fileName);
+					str+="<li><a href='/user/download.do?fileName="+fileCallPath+"'>"+"<img src='../resources/images/subject/send.png'>"+obj.fileName+"</a></li>";
+				}else{
+					console.log("파일 이미지다.");
+					//str += "<li>"+obj.original_file_name+"</li>";
+					var fileCallPath = encodeURIComponent(obj.uploadPath+"/s_"+obj.uuid+"_"+obj.fileName);
+					str += "<li><img src='/user/display.do?fileName="+fileCallPath+"'></li>";
+				}
+				
+			});
+			uploadResult.append(str);
+		}
 	
 	
 	

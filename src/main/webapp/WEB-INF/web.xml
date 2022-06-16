@@ -6,8 +6,8 @@
 
 	<display-name>LMS_Project</display-name>
 	<welcome-file-list>
-	    <welcome-file>/main.do</welcome-file>
-		<welcome-file>index.do</welcome-file>
+	    <welcome-file>/</welcome-file>
+<!-- 		<welcome-file>index.do</welcome-file> -->
 	</welcome-file-list>
 	<!-- Root Context -->
 	<context-param>
@@ -34,10 +34,10 @@
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
-<!-- 		<multipart-config>
-		추가
+	<multipart-config>
+	<!--  	추가-->
 	    <location>c:/upload/tmp</location>
-	    </multipart-config> -->
+	    </multipart-config>
 	</servlet>
 
 	<servlet-mapping>

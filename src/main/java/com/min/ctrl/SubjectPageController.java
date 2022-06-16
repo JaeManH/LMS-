@@ -61,6 +61,38 @@ public class SubjectPageController {
 		
 	}
 	
+	@RequestMapping(value = "/approvePage.do", method = RequestMethod.POST, produces = "application/text; charset=UTF-8;")
+	public String approvePaging(HttpSession session, RowNumVo rowVo,Authentication user) {
+		log.info("PageController approvePaging row : {}", session.getAttribute("row"));
+		log.info("PageController approvePaging rowVo : {}", session.getAttribute("rowVo"));
+		log.info("SubjectController approvePagingsubjectList 세션확인 : {}", user);
+		
+		MemberVo mvo = (MemberVo) user.getDetails();
+		System.out.println("**********************************************pageController"+mvo);
+		JSONObject json = null;
+		
+		//로그인한 회원이 관리자-승인처리할 경우
+		if(user.getAuthorities().toString().indexOf("ADMIN")!=-1) {
+			System.out.println("pageControllerAdmin"+user.getAuthorities());
+			System.out.println("pageControllerAdmin"+mvo);
+			rowVo.setTotal(sService.subjectTotalAdmin());
+			json=jsonForm(sService.subSelectToApproveAdmin(rowVo),rowVo, mvo);
+		}
+//		else if(user.getAuthorities().toString().indexOf("USER")!=-1) {
+//			System.out.println("**********************************************일반회원인지 확인용 " +user.getAuthorities());
+//			rowVo.setTotal(sService.subjectTotalUser());
+//			json=jsonForm(sService.subSelectAllUser(rowVo),rowVo, mvo);
+//		}
+		
+		session.removeAttribute("row");
+		session.setAttribute("row", rowVo);
+		
+		log.info(json.toJSONString());
+		
+		return json.toJSONString();
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	private JSONObject jsonForm(List<SubjectVo> subjectListRow, RowNumVo rowVo, MemberVo mvo) {
 		//반환되는 , 전송되는 객체

@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.authenticator.SpnegoAuthenticator.AuthenticateAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -68,7 +67,7 @@ public class ClassBoardController {
 	
 	@RequestMapping(value = "/classVideoInsertForm.do", method = RequestMethod.GET)
 	public String classVideoInsertForm(@SessionAttribute("cla_num") String cla_num) {
-		return "admin/admin_classVideoInsertForm";
+		return "app/admin/admin_classVideoInsertForm";
 	}
 	
 	@RequestMapping(value = "/classVideoInsert.do", method = RequestMethod.POST)
@@ -126,7 +125,7 @@ public class ClassBoardController {
 			map.put("doc_extention", multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf(".")));
 		}
 		service.classDocInsert(map);
-		return "redirect:/classBoardSelectedAll.do";
+		return "redirect:/user/classBoardSelectedAll.do";
 	}
 	
 	@RequestMapping(value = "/documentUpdateForm.do", method = RequestMethod.GET)
@@ -136,7 +135,7 @@ public class ClassBoardController {
 		boolean directoryCreated = file.mkdirs();
 		// 결과 출력
 		System.err.println(directoryCreated);
-		return "admin/admin_classBoardModifyForm";
+		return "admin_classBoardModifyForm";
 	}
 	
 	@RequestMapping(value = "/documentUpdate.do", method = RequestMethod.POST)

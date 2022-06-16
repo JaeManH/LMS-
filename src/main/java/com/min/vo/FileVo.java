@@ -20,10 +20,21 @@ public class FileVo {
 	 * file_type : 이미지 판단 여부
 	 * regdate : 저장되는 날짜
 	 */
+	private String fileName;
+	private String uploadPath;
+	private String uuid;
+	private boolean image;
+	private String regdate;
+	
+	
+	private int file_seq;
+	private int demoboard_seq;
 	private String original_file_name;
 	private String stored_file_name;
 	private String file_path;
 	private boolean file_type;
-	private String regdate;
+	
+	
 
 }
+

@@ -67,9 +67,7 @@ function reply(){
   <c:if test="${result.mes_cate eq 'R'}">
   <button style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-primary" onclick="reply()">답장하기</button>
   </c:if>
-  <c:if test="${result.mes_cate eq 'Q'}">
   <button style="float: right; margin-right: 30px; width: 132px;" type="button" class="btn btn-outline-danger" value="${result.mes_seq}" onclick="del(this)">삭제하기</button>
-  </c:if>
 </div>
 </body>
 <%@include file="./admin_footer.jsp" %>

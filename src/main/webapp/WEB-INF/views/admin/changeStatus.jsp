@@ -15,6 +15,7 @@
 </style>
 </head>
 <%@ include file="./admin_header.jsp" %>
+<%@ include file="../payAlert.jsp" %>
 <body>
   
         <div class="page-body">
@@ -125,7 +126,7 @@
                           	<br><br>
                           	<h1 class="display-1"><i class="fa fa-credit-card-alt"></i></h1><br>
                           	<h6 id="modalTitle">ddd</h6>
-                          	<div id="modalText">dd</div>
+                          	<div id="modalText">ddd</div>
                           </div>
                           <div class="modal-footer">
                             <button class="btn btn-light" type="button" data-bs-dismiss="modal" data-bs-original-title="" title="">돌아가기</button>
@@ -158,7 +159,7 @@
                                 <textarea class="form-control" id="canReason" disabled="disabled" style="color:tomato;"></textarea>
                               </div>
                             </form>
-                            <div id="payNumber" style="display:none;">d</div>
+                            <div id="payNumber" style="display:none;"></div>
                           </div>
                           <div class="modal-footer">
                           	<div id="changeButton"><button class="btn btn-primary" type="button" onclick="statusUpdate(0)">승인하기</button></div>

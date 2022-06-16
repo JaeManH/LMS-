@@ -6,8 +6,8 @@
 <meta charset="UTF-8">
 <title>관리자 전체목록 리스트 화면</title>
 </head>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="./js/subjectList.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="./js/approveSubjectList.js"></script>
 <%@ include file="./admin_header.jsp" %>
 <body>
    <div class="page-body">
@@ -52,18 +52,16 @@
                     <table class="table table-hover table-xs table-border-vertical">
                       <thead class="bg-primary">
                         <tr>
-		                     	<td><input type="checkbox" name="chkAll" onclick="checkAlls(this.checked)"></td>
                           <th scope="col"><h6 class="f-w-700">과목번호</h6></th>
                           <th scope="col"><h6 class="f-w-700">과목명</h6></th>
                           <th scope="col"><h6 class="f-w-700">카테고리</h6></th>
                           <th scope="col"><h6 class="f-w-700">등록자</h6></th>
-                          <th scope="col"><h6 class="f-w-700">담당강사</h6></th>
+                          <th scope="col"><h6 class="f-w-700">등록일</h6></th>
                           	<th scope="col"><h6 class="f-w-700">승인상태</h6></th>
-                          	<th scope="col"><h6 class="f-w-700">관리</h6></th>
                         </tr>
                       </thead>
     				<tbody>
-    					<jsp:useBean id="subjectList" class="com.min.bean.SubjectListBeanAdmin" scope="page"/>
+    					<jsp:useBean id="subjectList" class="com.min.bean.SubjectApproveListBeanAdmin" scope="page"/>
     					<jsp:setProperty property="lists" name="subjectList" value="${lists}"/>
     					<jsp:setProperty property="mem" name="subjectList" value="${mem}"/>
     					<jsp:getProperty property="listForm" name="subjectList"/>
@@ -91,7 +89,7 @@
                       </ul>
               </div>
               </div>
-              
+          <!--
               		<div class="col-sm-12">
                 <div class="card">
                 
@@ -116,7 +114,7 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
               
           </div>
        </div>

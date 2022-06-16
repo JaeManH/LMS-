@@ -14,6 +14,6 @@ public interface ITagDao {
 	public String selectSubjectTag(String sub_num);
 	public String selectTagJson(String name);
 
-
+	public String selectTagSubjectCode(String code);
 	
 }

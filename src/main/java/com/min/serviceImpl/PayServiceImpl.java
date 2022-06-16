@@ -30,7 +30,9 @@ public class PayServiceImpl implements IPayService{
 
 	@Override
 	public int payInsert(Map<String, Object> map) {
-		return dao.payInsert(map);
+		int n1 = dao.payInsert(map);
+		int n2 = dao.plusMileage(map);
+		return n1 + n2;
 	}
 
 	@Override
@@ -85,6 +87,26 @@ public class PayServiceImpl implements IPayService{
 	@Override
 	public int countCoupon(Map<String, Object> map) {
 		return dao.countCoupon(map);
+	}
+
+	@Override
+	public int plusCoupon(Map<String, Object> map) {
+		return dao.plusCoupon(map);
+	}
+
+	@Override
+	public String selectPhone(Map<String, Object> map) {
+		return dao.selectPhone(map);
+	}
+
+//	@Override
+//	public int insertSalary(Map<String, Object> map) {
+//		return dao.insertSalary(map);
+//	}
+
+	@Override
+	public int updateClaPeople(Map<String, Object> map) {
+		return dao.updateClaPeople(map);
 	}
 
 }

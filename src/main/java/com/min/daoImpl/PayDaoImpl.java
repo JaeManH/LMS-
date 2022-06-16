@@ -27,10 +27,10 @@ public class PayDaoImpl implements PayDao{
 	}
 	
 	//관리자페이지 상태별 조회
-		@Override
-		public List<PayVo> paySelectStatus(Map<String, Object> map) {
-			return sqlSession.selectList(NS+"paySelectStatus",map);
-		}
+	@Override
+	public List<PayVo> paySelectStatus(Map<String, Object> map) {
+		return sqlSession.selectList(NS+"paySelectStatus",map);
+	}
 		
 	//결제 insert
 	@Override
@@ -108,6 +108,35 @@ public class PayDaoImpl implements PayDao{
 	@Override
 	public int countCoupon(Map<String, Object> map) {
 		return sqlSession.selectOne(NS+"countCoupon",map);
+	}
+
+	//결제시 마일리지 10% 적립 
+	@Override
+	public int plusMileage(Map<String, Object> map) {
+		return sqlSession.update(NS+"plusMileage",map);
+	}
+
+	//10만원 이상 결제시에 쿠폰 발급
+	@Override
+	public int plusCoupon(Map<String, Object> map) {
+		return sqlSession.insert(NS+"plusCoupon",map);
+	}
+
+	//sms발송시 회원의 전화번호 가져오기
+	public String selectPhone(Map<String, Object> map) {
+		return sqlSession.selectOne(NS+"selectPhone",map);
+	}
+	
+//	//수강료 지급
+//	@Override
+//	public int insertSalary(Map<String, Object> map) {
+//		return sqlSession.insert(NS+"insertSalary",map);
+//	}
+
+	//수강자로 등록
+	@Override
+	public int updateClaPeople(Map<String, Object> map) {
+		return sqlSession.update(NS+"updateClaPeople",map);
 	}
 
 	

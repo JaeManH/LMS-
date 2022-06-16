@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.min.daoImpl.SubjectDaoImpl">
-
+<!-- 1) 과목 등록 -->
 <!-- 1-1) 과목 정보 입력 -->
 <insert id="subInsertSubject" parameterType="map">
 	INSERT INTO SUBJECT (SUB_NUM, SUB_TITLE, SUB_CONTENT, 
 						SUB_COD_CODE, SUB_REGDATE,SUB_REG_ID, 
-					 	SUB_REG_CODE, SUB_STATUS) 
+					 	SUB_REG_CODE, SUB_STATUS,SUB_SCORE,SUB_TAG)
 			VALUES (TO_CHAR(SYSDATE,'yyyyMMdd')||'SUB'||SUB_SEQ.NEXTVAL,#{sub_title},#{sub_content},
 					#{sub_cod_code},SYSDATE,#{sub_reg_id},
-					'REG'||SUB_REG_SEQ.NEXTVAL,'W')
+					'REG'||SUB_REG_SEQ.NEXTVAL,'W','{"score":[],"communicationTotal":0, "curriculumTotal":0, "bookTotal":0, "practiceTotal":0, "immersionTotal":0}',#{sub_tag})
 	<selectKey keyProperty="sub_num" resultType="java.lang.String" order="AFTER" >
 		SELECT MAX(SUB_NUM) FROM (SELECT SUB_NUM FROM SUBJECT ORDER BY SUB_REGDATE DESC) WHERE ROWNUM = 1
 	</selectKey>
@@ -37,17 +37,9 @@
 		UPDATE SUBJECT SET SUB_INS = #{sub_ins_id}
 				WHERE SUB_NUM = #{sub_num}
 </update>
-<!-- 1-5) 관리자가 과목 검수 후 해당 과목에 대한 승인 처리 (과목 상태변경) -->
-<!-- 	<foreach collection="sub_nums" item="sub_num" open="(" close=")" separator="," >
-		#{sub_num}
-	</foreach> -->
-<update id="subUpdateStatusA">
-	UPDATE SUBJECT 
-		SET SUB_STATUS = 'A'  
-			WHERE SUB_NUM = #{sub_num}
-</update>
 
-<!-- 2) 과목 조회 -->
+
+<!-- 2) 관리자 과목 조회 -->
 <!-- 2-0) 페이징 처리를 위한 과목 전체 갯수 출력 -->
 <select id="subjectTotalAdmin" resultType="java.lang.Integer">
 	 SELECT COUNT(*) FROM SUBJECT
@@ -70,7 +62,6 @@
 				JOIN SUB_CODE T2
 						ON T1.SUB_COD_CODE=T2.COD_CODE
 </select>
-
 <!-- 2-2) 관리자의 과목 상세 조회 -->
 <select id="adminSubjectDetail" parameterType="java.lang.String" resultType="SubjectVo">
 	SELECT SUB_NUM, SUB_TITLE, SUB_CONTENT, 
@@ -85,10 +76,33 @@
 																	ON s.SUB_COD_CODE = sc2.COD_CODE 
 								WHERE SUB_NUM = #{sub_num}
 </select>
+<!-- 2-3) 관리자의 과목 승이을 위한 전체 목록 조회 -->
+<select id="subSelectToApproveAdmin" parameterType="RowNumVo" resultType="SubjectVo">
+		SELECT RN, SUB_NUM, SUB_TITLE,SUB_REGDATE, SUB_REG_ID , SUB_INS , SUB_STATUS,COD_NAME
+			FROM (
+						SELECT RN, SUB_NUM, CASE WHEN LENGTH(SUB_TITLE) > 25 THEN SUBSTR(SUB_TITLE,0,25)|| '...' ELSE SUB_TITLE END SUB_TITLE,
+									SUB_REGDATE, SUB_REG_ID , SUB_INS , SUB_STATUS, SUB_COD_CODE
+							FROM (
+											SELECT ROW_NUMBER () OVER(ORDER BY SUB_REGDATE DESC) RN, s.SUB_NUM , s.SUB_TITLE ,
+													s.SUB_REGDATE, s.SUB_REG_ID , s.SUB_INS , s.SUB_STATUS, s.SUB_COD_CODE
+												FROM SUBJECT s
+												WHERE s.SUB_STATUS NOT IN ('A')
+										)
+								WHERE RN BETWEEN #{start} AND #{last}
+								ORDER BY SUB_REGDATE DESC
+						) T1
+				JOIN SUB_CODE T2
+						ON T1.SUB_COD_CODE=T2.COD_CODE
+</select>
+
+
+
+<!-- 3) 비회원/일반회원/강사 과목 조회 -->
+<!-- 3-0 페이징 처리를 위한 과목 전체 갯수 출력 -->
 <select id="subjectTotalUser" resultType="java.lang.Integer">
 	 SELECT COUNT(*) FROM SUBJECT WHERE SUB_STATUS = 'A'
 </select>
-<!-- 2-3) 비회원/일반회원/강사의 과목 전체 목록 조회 -->
+<!-- 3-1) 비회원/일반회원/강사의 과목 전체 목록 조회 -->
 <select id="subSelectAllUser" resultType="SubjectVo">
 SELECT RN, SUB_NUM, SUB_TITLE, SUB_CONTENT, SUB_REG_ID, COD_NAME, SUB_REGDATE
 	FROM (
@@ -97,7 +111,8 @@ SELECT RN, SUB_NUM, SUB_TITLE, SUB_CONTENT, SUB_REG_ID, COD_NAME, SUB_REGDATE
 						FROM (
 									SELECT ROW_NUMBER () OVER(ORDER BY SUB_REGDATE DESC) RN, s.SUB_NUM , s.SUB_TITLE ,
 													s.SUB_CONTENT, s.SUB_REGDATE , s.SUB_REG_ID , s.SUB_INS , s.SUB_COD_CODE  
-											FROM SUBJECT s 		
+											FROM SUBJECT s
+											WHERE SUB_STATUS NOT IN ('W','R')
 									)
 						WHERE RN BETWEEN 1 AND 10
 						ORDER BY SUB_REGDATE DESC 
@@ -105,25 +120,65 @@ SELECT RN, SUB_NUM, SUB_TITLE, SUB_CONTENT, SUB_REG_ID, COD_NAME, SUB_REGDATE
 		JOIN SUB_CODE T2
 				ON T1.SUB_COD_CODE=T2.COD_CODE 
 </select>
-<!-- 2-4) 일반회원의 과목 상세 조회 -->
-<select id="comSubjectDetail" parameterType="java.lang.String" resultType="SubjectVo">
-	SELECT SUB_NUM, SUB_TITLE, SUB_CONTENT , 
-			SUB_TAG||sc2.COD_TAG AS HASHTAG , SUB_COD_CODE , SUB_REGDATE , 
-			SUB_REG_ID , SUB_INS , sc2.COD_NAME,
-			sc.CUR_DETAIL ,sc.CUR_SUBCONTENT ,sc.CUR_VERSION ,
-			sc.CUR_TIME ,sc.CUR_LEVEL ,sc.CUR_FILE 
-		FROM SUBJECT s INNER JOIN SUB_CURRICULUM sc 
-						ON s.SUB_NUM = sc.CUR_SUB_NUM 
-						INNER JOIN SUB_CODE sc2 
-						ON s.SUB_COD_CODE = sc2.COD_CODE 
-				WHERE SUB_NUM=#{subnum}
+<!-- 3-2) 비회원/일반회원/강사의 과목 상세 조회 -->
+<select id="userSubjectDetail" parameterType="java.lang.String" resultType="SubjectVo">
+	SELECT SUB_NUM, SUB_TITLE, SUB_CONTENT,
+				SUB_TAG, sc2.COD_TAG  , SUB_REG_ID ,
+				SUB_INS , SUB_REGDATE , SUB_SCORE ,
+				sc.CUR_DETAIL ,
+				sc.CUR_SUBCONTENT , sc.CUR_VERSION , sc.CUR_TIME , sc.CUR_NUM,
+				sc.CUR_LEVEL , sc.CUR_FILE , sc2.COD_NAME
+						FROM SUBJECT s JOIN SUB_CURRICULUM sc
+																	ON s.SUB_NUM = sc.CUR_SUB_NUM
+														JOIN SUB_CODE sc2
+																	ON s.SUB_COD_CODE = sc2.COD_CODE
+								WHERE SUB_NUM = #{sub_num}
 </select>
-<select id="subSelectMySubject" resultType="SubjectVo">
+<!-- 3-3) 일반회원/강사의 마이페이지에서의 과목 목록 조회 -->
+<select id="subSelectMySubject" parameterType="java.lang.String" resultType="SubjectVo">
 	SELECT SUB_NUM, CASE WHEN LENGTH(SUB_TITLE) > 25 THEN SUBSTR(SUB_TITLE,0,25)|| '...' ELSE SUB_TITLE END SUB_TITLE , 
-			SUB_INS , SUB_STATUS , SUB_REGDATE , sc.COD_NAME 
+			SUB_CONTENT, SUB_INS , SUB_STATUS , SUB_REGDATE ,SUB_REG_ID, SUB_TAG, sc.COD_NAME ,sc.COD_TAG
 		FROM SUBJECT s JOIN SUB_CODE sc 
 						ON s.SUB_COD_CODE = sc.COD_CODE 
 			WHERE SUB_REG_ID = #{sub_reg_id}	
-			ORDER BY SUB_REGDATE DESC 
+			ORDER BY SUB_REGDATE DESC
 </select>
+
+
+<!-- 4) 관리자의 과목 상태변경 -->
+<!-- 	<foreach collection="sub_nums" item="sub_num" open="(" close=")" separator="," >
+		#{sub_num}
+	</foreach> -->
+<!-- 4-1) 과목 승인 후 'A'로 상태 변경 -->
+<update id="subUpdateStatusA" parameterType="map">
+	UPDATE SUBJECT SET SUB_STATUS = 'A' WHERE SUB_NUM = #{sub_num}
+</update>
+<!-- 4-2) 과목 삭제 후 'D'로 상태 변경 -->
+<update id="subUpdateStatusD" parameterType="map">
+	UPDATE SUBJECT SET SUB_STATUS = 'D' WHERE SUB_NUM = #{sub_num}
+</update>
+<!-- 4-3) 과목 반려 후 'R'로 상태 변경 -->
+<update id="subUpdateStatusR" parameterType="map">
+	UPDATE SUBJECT SET SUB_STATUS = 'R' WHERE SUB_NUM = #{sub_num}
+</update>
+<!-- 4-4) 과목 반려 시 반려사유 입력 -->
+<update id="subUpdateRejection" parameterType="map">
+	UPDATE SUBJECT SET SUB_REJECTION = #{sub_rejection} WHERE SUB_NUM = #{sub_num}
+</update>
+
+
+<!-- 5) 일반회원/강사의 등록 과목 수정 -->
+<update id="subUpdateSubject" parameterType="map">
+	UPDATE SUBJECT
+		SET SUB_REGDATE = SYSDATE, SUB_CONTENT = #{sub_content}
+		WHERE SUB_NUM = #{sub_num}
+</update>
+<update id="subUpdateCurriculum" parameterType="map">
+	UPDATE SUB_CURRICULUM
+		SET CUR_DETAIL=#{cur_detail}, CUR_SUBCONTENT=#{cur_subcontent}, CUR_VERSION=#{cur_version}, CUR_TIME=#{cur_time}, CUR_LEVEL=#{cur_level}, CUR_FILE=#{cur_file}
+			WHERE CUR_SUB_NUM = #{cur_sub_num}
+</update>
+
+
+
 </mapper>

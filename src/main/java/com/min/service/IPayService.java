@@ -15,7 +15,7 @@ public interface IPayService {
 	//관리자 결제상태별 조회
 	public List<PayVo> paySelectStatus(Map<String, Object> map);
 	
-	//결제시 테이블 insert
+	//결제시 테이블 insert + 마일리지 적립
 	public int payInsert(Map<String, Object> map);
 	
 	//결제시 쿠폰조회
@@ -47,4 +47,16 @@ public interface IPayService {
 	
 	//내 보유쿠폰 장수 조회
 	public int countCoupon(Map<String, Object> map);
+	
+	//10만원 이상 결제 시에 쿠폰 발급
+	public int plusCoupon(Map<String, Object> map);
+	
+	//sms서비스를위해 번호 가져오기
+	public String selectPhone(Map<String, Object> map);
+	
+//	//수강료 지급
+//	public int insertSalary(Map<String, Object> map);
+	
+	//수강자로 등록
+	public int updateClaPeople(Map<String, Object> map);
 }

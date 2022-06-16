@@ -5,6 +5,7 @@
 <head>
 <title>첫 페이지</title>
  <script type="text/javascript" src="../resources/js/pay/user_Mypay.js"></script>
+ <%@ include file="../payAlert.jsp" %>
  <style type="text/css">
 	table{
 		text-align:center;

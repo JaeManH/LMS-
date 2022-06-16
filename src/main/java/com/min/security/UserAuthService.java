@@ -16,7 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.min.service.IMemberService;
-import com.min.vo.InfoUser;
+import com.min.vo.CareerVo;
 import com.min.vo.MemberVo;
 
 
@@ -98,7 +98,6 @@ public class UserAuthService  implements AuthenticationProvider{
 
 	@Override
 	public boolean supports(Class<?> authentication) {
-		// TODO Auto-generated method stub
 		return authentication.equals(UsernamePasswordAuthenticationToken.class);
 	}
 

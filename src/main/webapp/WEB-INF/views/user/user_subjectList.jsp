@@ -261,7 +261,7 @@
 											</ul>
 
 											<h6 class="f-w-600">
-												<a href="javascript:modalOpen('${sVo.sub_num})" data-bs-toggle="modal" data-original-title="test" data-bs-target="#exampleModal">${sVo.sub_title}</a><span class="pull-right">
+												<a href="./user_subjectDetail.do?sub_num=${sVo.sub_num}">${sVo.sub_title}</a><span class="pull-right"><p>${sVo.sub_reg_id}</p>
 												<fmt:parseDate var='cDate' value="${sVo.sub_regdate}" pattern="yyyy-MM-dd" /> <fmt:formatDate value="${cDate}" /></span>
 											</h6>
 											<p>${sVo.sub_content}</p>
@@ -329,7 +329,7 @@
 	} */
 	
 	
- 	function modalOpen(subnum){
+/*  	function modalOpen(subnum){
 		console.log("일반회원 과목 상세조회 모달 오픈"+subnum);
 		 $.ajax({
 			url:"./user_subjectDetail.do",
@@ -347,7 +347,7 @@
 				getTextModal.innerHTML = '<h6>과목설명<span>"+data.sub_content+"</span></h6>';
 			}
 		 })
-	} 
+	} */ 
 	
 	
 	

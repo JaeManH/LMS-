@@ -7,7 +7,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
+         pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,20 +33,23 @@
         <!-- Container-fluid starts-->
         <div class="container-fluid">
             <div class="row">
-                <table class="table table-hover">
+                <table class="table table-hover" style="text-align: center">
                     <thead>
                     <tr>
-                        <th scope="col" style="width: 115px;"></th>
                         <th scope="col">과정명</th>
                         <th scope="col">상태</th>
+                        <th scope="col" style="width: 115px;"></th>
                     </tr>
                     </thead>
                     <tbody>
-                    <c:forEach var="vo" items="${lists}"  varStatus="vs">
+                    <c:forEach var="vo" items="${lists}" varStatus="vs">
                         <tr>
-                            <td><button type="button" class="btn btn-primary" onclick="likeCancel()">취소</button></td>
-                            <td><a href="./classSelectDetail.do?cla_num=${vo.cla_num}">${vo.cla_title}</a></td>
+                            <td style="text-align: left;padding-left: 100px;"><a href="./classSelectDetail.do?cla_num=${vo.cla_num}">${vo.cla_title}</a></td>
                             <td>${vo.cla_status}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" onclick="likeCancel('${vo.cla_num}',this)">취소
+                                </button>
+                            </td>
                         </tr>
                     </c:forEach>
 
@@ -61,9 +64,30 @@
 </div>
 
 
-
 <%@include file="../footer.jsp" %>
+<script>
+    function likeCancel(claid,btn) {
+        console.log(claid);
+        console.log('좋아요 버튼 클릭 됨');
+        $.ajax({
+            url: './clickLike.do',
+            data: {"claid": claid},
+            type: 'POST',
+            async: true,
+            dataType: 'text',
+            success: function (result) {
+                console.log(result);
+                $("#likeCnt").text(result);
+            },
+            error: function () {
+                console.log("통신실패")
+            }
 
+        })
+        btn.parentNode.parentNode.remove();
+        console.log(btn);
+    }
+</script>
 
 
 </body>

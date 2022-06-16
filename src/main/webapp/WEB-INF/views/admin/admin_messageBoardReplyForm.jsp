@@ -50,7 +50,7 @@
                         <div class="col">
                           <div class="mb-3">
                             <label class="form-label" for="exampleInputPassword2">내용</label>
-                            <textarea name="content" class="form-control" id="exampleFormControlTextarea4" rows="3"></textarea>
+                            <textarea name="mes_content" class="form-control" id="exampleFormControlTextarea4" rows="3"></textarea>
                           </div>
                         </div>
                       </div>
