@@ -46,6 +46,8 @@ public class TagController {
     public String getTags() {
         String tags = tagService.selectTagAll();
         return tags;
+
+        
     }
 
     @RequestMapping(value = "*/searchTag.do", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
