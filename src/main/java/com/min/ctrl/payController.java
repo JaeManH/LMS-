@@ -40,7 +40,7 @@ public class payController{
 	//결제페이지 이동
 	@RequestMapping(value = "/pay.do", method = RequestMethod.GET)
 	public String home(Model model,Authentication user) {
-		logger.info("----------- payments 이동 ----------");
+		logger.info("----------- payments 이동 -----------");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("tra_id", user.getPrincipal());
 		map.put("cou_tra_id", user.getPrincipal());
