@@ -120,12 +120,13 @@ public class MemberDaoImpl implements IMemberDao{
 		return sqlSession.selectOne(NS+"checkInsId",id);
 	}
 
+	//경력 등록
 	@Override
 	public int insertCar(Map<String, Object> map) {
 		// TODO Auto-generated method stub
 		return sqlSession.insert(NS+"insertCar",map);
 	}
-
+	//경력 업데이트
 	@Override
 	public int insCarUpdate(Map<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -139,6 +140,7 @@ public class MemberDaoImpl implements IMemberDao{
 		return sqlSession.update(NS+"updateCar",map);
 	}
 
+	//경력 상태변경
 	@Override
 	public int updateCarDelflag(Map<String, Object> map) {
 		// TODO Auto-generated method stub
@@ -149,6 +151,42 @@ public class MemberDaoImpl implements IMemberDao{
 	public CareerVo loginCar(Map<String, Object> map) {
 		// TODO Auto-generated method stub
 		return sqlSession.selectOne(NS+"LoginCar",map);
+	}
+
+	@Override
+	public int checkTraEmail(String id) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NS+"checkTraEmail",id);
+	}
+
+	@Override
+	public int checkInsEmail(String id) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NS+"checkInsEmail",id);
+	}
+
+	@Override
+	public MemberVo findTraPw(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NS+"findTraPw",map);
+	}
+
+	@Override
+	public int updateTraPw(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return sqlSession.update(NS+"updateTraPw",map);
+	}
+
+	@Override
+	public MemberVo findInsPw(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return sqlSession.selectOne(NS+"findInsPw",map);
+	}
+
+	@Override
+	public int updateInsPw(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return sqlSession.update(NS+"updateInsPw",map);
 	}
 
 }

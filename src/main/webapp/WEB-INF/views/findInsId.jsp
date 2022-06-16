@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>loginForm</title>
+<title>FindTraIdForm</title>
  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +22,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
     <!-- Font Awesome-->
     <link rel="stylesheet" type="text/css" href="../assets/css/fontawesome.css">
-    
     <!-- ico-font-->
     <link rel="stylesheet" type="text/css" href="../assets/css/icofont.css">
     <!-- Themify icon-->
@@ -33,6 +32,8 @@
     <link rel="stylesheet" type="text/css" href="../assets/css/feather-icon.css">
     <!-- Plugins css start-->
     <!-- Plugins css Ends-->
+        <!-- Plugins css start-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/sweetalert2.css">
     <!-- Bootstrap css-->
     <link rel="stylesheet" type="text/css" href="../assets/css/bootstrap.css">
     <!-- App css-->
@@ -40,28 +41,92 @@
     <link id="color" rel="stylesheet" href="../assets/css/color-1.css" media="screen">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="../assets/css/responsive.css">
-  <script type="text/javascript"> 
- 	function loginCheck(){
- 		console.log('로그인 작동합니다');
- 		var id = document.getelementbyid('inputid');
- 		var pw = document.getelementbyid('inputpw');
- 		console.log(id.value, pw.value);
+<script type="text/javascript">
+	function findTraId(){
+		console.log('아이디 찾기');
+		var name = document.getElementById('inputName');
+		var email = document.getElementById('inputEmail');
+		console.log(name.value, email.value);
 		
- 		
- 		//유효성 검사 후 ajax 로그인
- 		if(id.value == "" || id.value.trim() == ""){
- 			id.value = "";
- 			id.focus();
- 			swal ("로그인", "아이디를 입력해주세요.");
- 		}else if(pw.value == "" || pw.value.trim()==""){
- 			pw.value="";
- 			pw.focus();
- 			swal("로그인", "비밀번호를 입력해주세요.");
- 		}else{
- 					
- 		}
- 	}
- </script> 
+		var frm = document.forms[0];
+// 		frm.action = "./login.do";
+		console.log(frm);
+		
+		// 유효성 검사 후 Ajax 로그인
+		if(name.value == "" || name.value.trim() == ""){
+			name.value = "";
+			name.focus();
+			
+			 Swal.fire({
+                 icon: 'warning',
+                 title: '아이디를 입력해주세요.',
+                 timer: 1500,
+                 timerProgressBar: true,
+                 didOpen: () => {
+                   Swal.showLoading()
+                   const b = Swal.getHtmlContainer().querySelector('b')
+                   timerInterval = setInterval(() => {
+                     b.textContent = Swal.getTimerLeft()
+                   }, 100)
+                 },
+                 willClose: () => {
+                   clearInterval(timerInterval)
+                 }
+               }).then((result) => {
+                 /* Read more about handling dismissals below */
+                 if (result.dismiss === Swal.DismissReason.timer) {
+                   console.log('I was closed by the timer')
+                 }
+             });
+			
+		}else if(email.value == "" || email.value.trim() == ""){
+			email.value = "";
+			email.focus();
+			 Swal.fire({
+                 icon: 'warning',
+                 title: '이메일을 입력해주세요.',
+                 timer: 1500,
+                 timerProgressBar: true,
+                 didOpen: () => {
+                   Swal.showLoading()
+                   const b = Swal.getHtmlContainer().querySelector('b')
+                   timerInterval = setInterval(() => {
+                     b.textContent = Swal.getTimerLeft()
+                   }, 100)
+                 },
+                 willClose: () => {
+                   clearInterval(timerInterval)
+                 }
+               }).then((result) => {
+                 /* Read more about handling dismissals below */
+                 if (result.dismiss === Swal.DismissReason.timer) {
+                   console.log('I was closed by the timer')
+                 }
+             });
+		}else{
+			$.ajax({
+// 				url:"./loginCheckText.do", // 반환되는 값을 Text 로 처리
+				url:"./findInsId.do", // 반환되는 값을 Map(JSON) 으로 처리
+				method:"post",
+				data:"name=" + name.value + "&email=" + email.value,
+				success:function(msg){
+					console.log(msg, typeof msg); // 형태 확인
+					console.log(msg.isc);
+					if(msg.isc == "성공"){
+						console.log(msg.isc);
+						console.log(msg.test);
+						$("#result").html("아이디 : "+msg.test);
+					}else{
+						$("#result").html("해당하는 아이디가 존재하지 않습니다.");
+					}
+				},
+				error:function(){
+					swal("로그인","로그인에 장애가 발생");
+				}
+			})
+		}
+	}
+</script>
 </head>
 <body>
  <!-- Loader starts-->
@@ -77,50 +142,39 @@
         <div class="row">
           <div class="col-12">
             <div class="login-card">
-              <form class="theme-form login-form" method="POST" action="./logingo.do">
-                <h4>일반회원 로그인</h4>
-                <h6>Welcome back! Log in to your account.</h6>
+              <form class="theme-form login-form needs-validation" novalidate="" method="POST" >
+                <h4>강사 아이디 찾기</h4>
+                <h6>이름과 이메일을 입력해주세요.</h6>
                 <div class="form-group">
-                  <label>ID</label>
+                  <label>이름</label>
                   <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
-                    <input class="form-control" type="text" name="id" id="inputId" required="" placeholder="Id" value="${id}">
+                    <input class="form-control" type="text" name="name" id="inputName" required="" placeholder="이름">
+                
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Password</label>
-                  <div class="input-group"><span class="input-group-text"><i class="icon-lock"></i></span>
-                    <input class="form-control" type="password" name="pw" id="inputPw"  placeholder="*********" value="${pw}">
-                    <div class="show-hide"><span class="show">                         </span></div>
+                  <label>이메일</label>
+                  <div class="input-group"><span class="input-group-text"><i class="icon-email"></i></span>
+                    <input class="form-control" type="email" name="email" id="inputEmail"required="" placeholder="email">
+                    
+                  
                   </div>
                 </div>
-            
-                <div class="form-group">
-<!--                 <input name="remember-me" type="checkbox"> : Remember me  -->
-                 <a class="link" href="./findTraPwView.do">비밀번호 찾기</a>
-                <a class="link" style="padding-right: 8px;" href="./findTraIdView.do">아이디&nbsp; º </a>
-                <font color="red">
-				<p> ${securityexceptionmsg}</p>
-				</font>
-				<c:if test="${not empty securityexceptionmsg}">
-
-    				</c:if>
-				<br>
-				<input type="hidden" name="loginRedirect" value="${loginRedirect}" />
-                  <input class="btn btn-success" type="submit" value="Log In" data-bs-toggle="tooltip" title="btn btn-success"  onclick="loginCheck()">
+              
+                <span class="helper-text" id="result"></span>
+                <div  class="form-group">
+                  <input class="btn btn-success" value="아이디 찾기" data-bs-toggle="tooltip" title="btn btn-success"  onclick="findTraId()">
                 </div>
                 <div class="login-social-title">                
                   <h5>Sign in with</h5>
                 </div>
                 <div class="form-group">
                   <ul class="login-social">
-                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="linkedin"></i></a></li>
-                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="twitter"></i></a></li>
-                    <li><a href="https://www.linkedin.com/login" target="_blank"><i data-feather="facebook"></i></a></li>
-                    <li><a href="https://www.instagram.com/login" target="_blank"><i data-feather="instagram">                  </i></a></li>
+                    
                   </ul>
                 </div>
-                <p>Don't have account?<a class="ms-2" href="./traSignUp.do">회원가입</a></p>
-                <p><a class="ms-2" href="../app/main.do">돌아가기</a></p>
+                <p>Don't have account?<a class="ms-2" href="./InsSingUpgo.do">회원가입</a></p>
+                <p><a class="ms-2" href="./main.do">메인으로</a></p>
                   <input class="btn btn-warning btn-block btn-lg" type="button" value="돌아가기" onclick="history.back(-1)">
               </form>
             </div>
@@ -139,6 +193,7 @@
     <script src="../assets/js/sidebar-menu.js"></script>
     <script src="../assets/js/config.js"></script>
     <!-- Bootstrap js-->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="../assets/js/bootstrap/popper.min.js"></script>
     <script src="../assets/js/bootstrap/bootstrap.min.js"></script>
     <!-- Plugins JS start-->

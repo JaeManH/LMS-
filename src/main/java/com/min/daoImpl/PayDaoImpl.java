@@ -11,6 +11,7 @@ import com.min.dao.PayDao;
 import com.min.vo.CouponVo;
 import com.min.vo.MemberVo;
 import com.min.vo.PayVo;
+import com.min.vo.SalaryVo;
 
 @Repository
 public class PayDaoImpl implements PayDao{
@@ -127,16 +128,28 @@ public class PayDaoImpl implements PayDao{
 		return sqlSession.selectOne(NS+"selectPhone",map);
 	}
 	
-//	//수강료 지급
-//	@Override
-//	public int insertSalary(Map<String, Object> map) {
-//		return sqlSession.insert(NS+"insertSalary",map);
-//	}
+	//수강료 지급
+	@Override
+	public int insertSalary(Map<String, Object> map) {
+		return sqlSession.insert(NS+"insertSalary",map);
+	}
 
 	//수강자로 등록
 	@Override
 	public int updateClaPeople(Map<String, Object> map) {
 		return sqlSession.update(NS+"updateClaPeople",map);
+	}
+
+	//강사 아이디 가져오기
+	@Override
+	public List<String> getIns(Map<String, Object> map) {
+		return sqlSession.selectList(NS+"getIns",map);
+	}
+
+	//수강료 지급내역 가져오기
+	@Override
+	public List<SalaryVo> getSalary() {
+		return sqlSession.selectList(NS+"getSalary");
 	}
 
 	

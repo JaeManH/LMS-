@@ -22,7 +22,7 @@
 	
 	
 	<typeAlias type="com.min.vo.InstructorVo" alias="InstructorVo"/>
-	
+	<typeAlias type="com.min.vo.SalaryVo" alias="SalaryVo"/>
 	
 </typeAliases>
 

@@ -1,12 +1,12 @@
+<%@ page import="java.util.Random" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+         pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <title>Insert title here</title>
 <%@ include file="./admin_header.jsp" %>
 <body>
-<!-- Page Sidebar Ends-->
-        <div class="page-body">
+<div class="page-body">
           <div class="container-fluid">
             <div class="page-header">
               <div class="row">
@@ -53,13 +53,13 @@
                             <c:if test="${vo.cla_status eq '모집중'}">
                             <span class="badge badge-primary">${vo.cla_status}</span>
                             </c:if>
-                             <c:if test="${vo.cla_status eq '승인중'}">
+                            <c:if test="${vo.cla_status eq '승인중'}">
                             <span class="badge badge-danger">${vo.cla_status}</span>
                             </c:if>
                             <c:if test="${vo.cla_status eq '개강전'}">
                             <span class="badge badge-secondary">${vo.cla_status}</span>
                             </c:if>
-                            <c:if test="${vo.cla_status eq '수강중'}">
+                            <c:if test="${vo.cla_status eq '강의중'}">
                             <span class="badge badge-secondary">${vo.cla_status}</span>
                             </c:if>
                             <c:if test="${vo.cla_status eq '종강'}">
@@ -92,10 +92,37 @@
                                 </ul>
                               </div>
                               
-                              <sec:authentication property="principal"  var="id" /><br>
-						<%-- 	    principal =>  시큐리티 세션 아아디 : ${id}<br> --%>
-							  <sec:authentication property="Details" var="info" /><br>
-						<%-- 		회원권한 : ${info.auth} <br> --%>
+                               <%!
+                                                    String[] color = {"primary","secondary","danger","dark","info","warning","success","light"};
+
+                                                    public String ranColor(int n){
+                                                        return color[n];
+                                                    }
+
+                                                %>
+                                                <div class="customers">
+                                                    <ul>
+                                                        <li class="d-inline-block ms-2">
+<%--                                                             <h5 style="color: teal;">${vo.cla_price} ₩</h5> --%>
+                                                        </li>
+                                                        <li style="text-align: right;padding-left: 15px">
+                                                            <c:forEach items="${vo.cla_tags}" var="tag">
+                                                                    <span class="badge round-badge-<%out.print(ranColor((int)(Math.random()*8)));%>"
+                                                                          style="position: relative; ">${tag}</span>
+                                                            </c:forEach>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                              
+<!--                               <div class="project-status mt-4"> -->
+<!--                                 <div class="media mb-0"> -->
+<!--                                   <p>70% </p> -->
+<!--                                   <div class="media-body text-end"><span>Done</span></div> -->
+<!--                                 </div> -->
+<!--                                 <div class="progress" style="height: 5px"> -->
+<!--                                   <div class="progress-bar-animated bg-primary progress-bar-striped" role="progressbar" style="width: 70%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div> -->
+<!--                                 </div> -->
+<!--                               </div> -->
                             </div>
                           </div>
                  		  </c:forEach>

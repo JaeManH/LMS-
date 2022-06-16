@@ -102,11 +102,28 @@ TRAINEE
 WHERE TRA_NAME  =#{name} 
 AND TRA_EMAIL =#{email}
 </select>
+<!-- 일반회원 비밀번호 찾기 -->
+<update id="updateTraPw" parameterType="map" >
+		update TRAINEE set TRA_PW = #{pw} 
+		WHERE TRA_ID = #{id}
+		AND TRA_NAME = #{name}
+		AND TRA_EMAIL = #{email}
+		
+	</update>
+<select id="findTraPw"  resultMap="TraResult" parameterType="map" resultType="MemberVo">
+	select * from TRAINEE WHERE TRA_ID = #{id} and TRA_NAME=#{name} and TRA_EMAIL=#{email}
+</select>
+
+
+
 <!-- 일반회원 아이디 중복체크 -->
 <select id="checkTraId"  parameterType="String" resultType="Integer">
 SELECT COUNT(*) FROM TRAINEE WHERE TRA_ID = #{id}
 </select>
-
+<!-- 일반회원 아이디 중복체크 -->
+<select id="checkTraEmail"  parameterType="String" resultType="Integer">
+SELECT COUNT(*) FROM TRAINEE WHERE TRA_EMAIL = #{email}
+</select>
 
 
 <!-- 회원 탈퇴 신청 (W = 탈퇴 승인 대기) -->
@@ -135,12 +152,12 @@ SELECT  RN, TRA_ID ,
 		TRA_REGDATE ,
 		TRA_DELFLAG 
 		FROM TRAINEE t 
-		WHERE  TRA_DELFLAG = ('N','W'))
+		WHERE  TRA_DELFLAG IN ('N','W'))
 			WHERE RN BETWEEN #{start} AND #{last}
 </select>
 <select id="adminUserListTotal" resultType="Integer">
 	SELECT COUNT(*) FROM TRAINEE s
-	WHERE TRA_DELFLAG = ('N','W')
+	WHERE TRA_DELFLAG IN ('N','W')
 </select>
 
 
@@ -214,7 +231,7 @@ WHERE CAR_SEQ = #{car_seq}
 <update id="updateCarDelflag" parameterType="map">
 UPDATE INSTRUCTOR
 SET
-INS_DELFLAG='R'
+INS_DELFLAG='N'
 WHERE INS_ID=#{id}
 </update>
 
@@ -225,11 +242,25 @@ UPDATE INSTRUCTOR SET INS_CAREER = (SELECT CAR_SEQ FROM CAREER  WHERE CAR_INS_ID
 						WHERE INS_ID = #{id}
 </update>
 
-<!-- 일반회원 아이디 중복체크 -->
+<!-- 강사 아이디 중복체크 -->
 <select id="checkInsId"  parameterType="String" resultType="Integer">
 SELECT COUNT(*) FROM INSTRUCTOR WHERE INS_ID = #{id}
 </select>
 
+<!-- 강사 이메일 중복체크 -->
+<select id="checkInsEmail"  parameterType="String" resultType="Integer">
+SELECT COUNT(*) FROM INSTRUCTOR WHERE INS_EMAIL = #{email}
+</select>
+<update id="updateInsPw" parameterType="map" >
+		update INSTRUCTOR set INS_PW = #{pw} 
+		WHERE INS_ID = #{id}
+		AND INS_NAME = #{name}
+		AND INS_EMAIL = #{email}
+		
+	</update>
+<select id="findInsPw"  resultMap="InsResult" parameterType="map" resultType="MemberVo">
+	select * from INSTRUCTOR WHERE INS_ID = #{id} and INS_NAME=#{name} and INS_EMAIL=#{email}
+</select>
 
 
 
@@ -243,7 +274,7 @@ INS_PHONE=#{phone},
 INS_BIRTH=#{birth},  
 INS_BANKNUM=#{banknum}, 
 INS_BANK=#{bank}, 
-INS_REGDATE=SYSDATE, 
+INS_REGDATE=SYSDATE
 WHERE INS_ID=#{id}
 </update>
 

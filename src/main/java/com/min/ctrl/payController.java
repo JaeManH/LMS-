@@ -22,6 +22,7 @@ import com.min.serviceImpl.coolSMS;
 import com.min.vo.CouponVo;
 import com.min.vo.MemberVo;
 import com.min.vo.PayVo;
+import com.min.vo.SalaryVo;
 
 
 @Controller
@@ -39,7 +40,7 @@ public class payController{
 	//결제페이지 이동
 	@RequestMapping(value = "/pay.do", method = RequestMethod.GET)
 	public String home(Model model,Authentication user) {
-		logger.info("----------- payments 이동 ---------");
+		logger.info("----------- payments 이동 -----------");
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("tra_id", user.getPrincipal());
 		map.put("cou_tra_id", user.getPrincipal());
@@ -52,7 +53,7 @@ public class payController{
 	
 	//결제완료시 결제완료 페이지로 이동
 	@RequestMapping(value = "/paySuccess.do", method = RequestMethod.GET)
-	public String paySuccess(Model model,String paynum,String finalAmount,String plusMile,Authentication user) {
+	public String paySuccess(Model model,String paynum,String finalAmount,String plusMile,Authentication user,String claNum) {
 		logger.info("--------결제성공 이동 ---------");
 		System.out.println(paynum);
 		System.out.println(finalAmount);
@@ -75,7 +76,9 @@ public class payController{
 		//수강자 등록하기
 		Map<String, Object> claMap = new HashMap<String, Object>();
 		claMap.put("tra_id", user.getPrincipal());
+		claMap.put("claNum", claNum);
 		int claResult = service.updateClaPeople(claMap);
+		
 		System.out.println("수강자 등록 확인 !!"+claResult);
 		//회원 전화번호 가져오기
 		Map<String, Object> phoneMap = new HashMap<String, Object>();
@@ -150,8 +153,10 @@ public class payController{
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("pay_num", paynum);
 		int n = service.statusUpdate(map);
+		
+		
 		Map<String, Object> phoneMap = new HashMap<String, Object>();
-		phoneMap.put("tra_id", user.getPrincipal());
+		phoneMap.put("tra_id", user.getPrincipal());		
 		String phone = service.selectPhone(phoneMap); 
 		String phoneNum = phone.substring(0, 3)+"-"+phone.substring(3,7)+"-"+phone.substring(7,phone.length());
 		SMSservice.certifiedPhoneNumber(phoneNum , paynum,"refund");
@@ -202,4 +207,11 @@ public class payController{
 		return "user/user_MyDiscount";
 	}
 	
+	//수강료 지급 페이지 이동하기
+	@RequestMapping(value = "/salary.do" ,method = RequestMethod.GET)
+	public String salary(Model model) {
+		List<SalaryVo> getSal = service.getSalary();
+		model.addAttribute("lists",getSal);
+		return "admin/admin_salary";
+	}
 }

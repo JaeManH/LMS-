@@ -1,5 +1,6 @@
 package com.min.serviceImpl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import com.min.service.IPayService;
 import com.min.vo.CouponVo;
 import com.min.vo.MemberVo;
 import com.min.vo.PayVo;
+import com.min.vo.SalaryVo;
 
 @Service
 public class PayServiceImpl implements IPayService{
@@ -61,7 +63,14 @@ public class PayServiceImpl implements IPayService{
 		int n1 = dao.statusUpdate(map);
 		int n2 = dao.returnCoupon(map);
 		int n3 = dao.returnMileage(map);
-		return n1 + n2 + n3;
+		PayVo vo = dao.getPayDetail(map);
+		int plusMile = (int)(vo.getPay_price()*0.1);
+		String traId = vo.getPay_tra_buyer();
+		System.out.println("useMilage : " + plusMile + traId);
+		map.put("tra_id", traId);
+		map.put("useMilage", plusMile);
+		int n4 = dao.updateMileage(map);
+		return n1 + n2 + n3 + n4;
 	}
 
 	@Override
@@ -99,14 +108,24 @@ public class PayServiceImpl implements IPayService{
 		return dao.selectPhone(map);
 	}
 
-//	@Override
-//	public int insertSalary(Map<String, Object> map) {
-//		return dao.insertSalary(map);
-//	}
+	@Override
+	public int insertSalary(Map<String, Object> map) {
+		return dao.insertSalary(map);
+	}
 
 	@Override
 	public int updateClaPeople(Map<String, Object> map) {
 		return dao.updateClaPeople(map);
+	}
+
+	@Override
+	public List<String> getIns(Map<String, Object> map) {
+		return dao.getIns(map);
+	}
+
+	@Override
+	public List<SalaryVo> getSalary() {
+		return dao.getSalary();
 	}
 
 }

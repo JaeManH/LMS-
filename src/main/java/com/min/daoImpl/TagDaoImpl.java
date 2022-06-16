@@ -51,4 +51,9 @@ public class TagDaoImpl implements ITagDao {
 	public String selectTagSubjectCode(String code) {
 		return session.selectOne(NS+"selectTagSubjectCode",code);
 	}
+
+	@Override
+	public List<String> selectTagClassSubject(String cla_num) {
+		return session.selectList(NS+"selectTagClassSubject",cla_num);
+	}
 }

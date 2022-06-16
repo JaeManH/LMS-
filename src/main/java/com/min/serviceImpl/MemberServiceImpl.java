@@ -137,6 +137,36 @@ public class MemberServiceImpl implements IMemberService{
 		int m = dao.updateCarDelflag(map);
 		return (n>0 || m>0) ? 1:0 ;
 	}
+	@Override
+	public int checkTraEmail(String id) {
+		// TODO Auto-generated method stub
+		return dao.checkTraEmail(id);
+	}
+	@Override
+	public int checkInsEmail(String id) {
+		// TODO Auto-generated method stub
+		return dao.checkInsEmail(id);
+	}
+	@Override
+	public MemberVo findTraPw(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return dao.findTraPw(map);
+	}
+	@Override
+	public int updateTraPw(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return dao.updateTraPw(map);
+	}
+	@Override
+	public MemberVo findInsPw(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return dao.findInsPw(map);
+	}
+	@Override
+	public int updateInsPw(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return dao.updateInsPw(map);
+	}
 
 	
 

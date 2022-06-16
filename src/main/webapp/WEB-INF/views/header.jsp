@@ -50,6 +50,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<sec:authorize access="isAuthenticated()">
+    <sec:authentication property="Details" var="info" />
+</sec:authorize>
   <!-- Loader starts-->
     <div class="loader-wrapper">
       <div class="theme-loader">    
