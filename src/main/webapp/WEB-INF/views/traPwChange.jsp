@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FindTraIdForm</title>
+<title>FindTraPwForm</title>
  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -143,7 +143,7 @@
           <div class="col-12">
             <div class="login-card">
               <form class="theme-form login-form needs-validation" novalidate="" method="POST" >
-                <h4>아이디 찾기</h4>
+                <h4>비밀번호 찾기</h4>
                 <h6>이름과 이메일을 입력해주세요.</h6>
                 <div class="form-group">
                   <label>이름</label>
@@ -182,7 +182,38 @@
         </div>
       </div>
     </section>
-    
+    <section>         
+      <div class="container-fluid p-0"> 
+        <div class="row m-0">
+          <div class="col-12 p-0">    
+            <div class="login-card">
+              <div class="login-main"> 
+                <form class="theme-form login-form">
+                  <h4>unlock                   </h4>
+                  <div class="form-group">
+                    <label class="col-form-label">Enter your Password</label>
+                    <div class="input-group"><span class="input-group-text"><i class="icon-email"></i></span>
+                      <input class="form-control" type="password" name="login[password]" required="" placeholder="*********">
+                      <div class="show-hide"><span class="show"> </span></div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="checkbox p-0">
+                      <input id="checkbox1" type="checkbox">
+                      <label class="text-muted" for="checkbox1">Remember password</label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <button class="btn btn-primary btn-block" type="submit">Unlock  </button>
+                  </div>
+                  <p>Already have an account?<a class="ms-2" href="log-in.html">Sign in                   </a></p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- page-wrapper end-->
     <!-- latest jquery-->
     <script src="../assets/js/jquery-3.5.1.min.js"></script>

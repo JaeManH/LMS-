@@ -32,6 +32,11 @@ public interface IMemberDao {
 	public int updateProfile(Map<String, Object> map);
 	//일반회원 아이디 중복 체크
 	public int checkTraId(String id);
+	//일반회원 이메일 중복 체크
+	public int checkTraEmail(String id);
+	//일반회원 비밀번호 찾기
+	public MemberVo findTraPw(Map<String, Object> map);
+	public int updateTraPw(Map<String, Object> map);
 	
 	
 	//*********강사 **********
@@ -49,6 +54,8 @@ public interface IMemberDao {
 	public int updateIns(Map<String, Object> map);
 	//강사 아이디 중복 체크
 	public int checkInsId(String id);
+	//강사 이메일 중복 체크
+	public int checkInsEmail(String id);
 	//강사 회원가입 시 경력 자동 등록
 	public int insertCar(Map<String, Object> map);
 	//강사 경력코드 추카
@@ -57,7 +64,9 @@ public interface IMemberDao {
 	public int updateCar(Map<String, Object> map);
 	//강사 회원상태 변경
 	public int updateCarDelflag(Map<String, Object> map);
-	
+	//일반회원 비밀번호 찾기
+	public MemberVo findInsPw(Map<String, Object> map);
+	public int updateInsPw(Map<String, Object> map);
 	
 	
 	//페이징처리
