@@ -251,6 +251,7 @@
                     <ul class="nav-submenu menu-content">
                       <li><a href="./adminSelectPay.do">회원결제 전체조회</a></li>
                       <li><a href="./changeStatus.do">환불신청 / 환불승인</a></li>
+                      <li><a href="./salary.do">수강료 지급내역</a></li>
                     </ul>
                   </li>
                   <li class="dropdown"><a class="nav-link menu-title" href="javascript:void(0)"><i data-feather="folder-plus"></i><span>통계</span></a>

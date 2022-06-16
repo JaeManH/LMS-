@@ -6,6 +6,7 @@ import java.util.Map;
 import com.min.vo.CouponVo;
 import com.min.vo.MemberVo;
 import com.min.vo.PayVo;
+import com.min.vo.SalaryVo;
 
 public interface PayDao {
 	
@@ -63,10 +64,16 @@ public interface PayDao {
 	//sms서비스를위해 번호 가져오기
 	public String selectPhone(Map<String, Object> map);
 	
-//	//수강료 지급
-//	public int insertSalary(Map<String, Object> map);
+	//수강료 지급
+	public int insertSalary(Map<String, Object> map);
 	
 	//수강자로 등록
 	public int updateClaPeople(Map<String, Object> map);
+	
+	//강사 아이디 가져오기
+	public List<String> getIns(Map<String, Object> map);
+	
+	//수강료 지급내역 가져오기
+	public List<SalaryVo> getSalary();
 	
 }

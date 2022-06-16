@@ -166,7 +166,7 @@
 					  title: 'Payment success',
 				      text: msg,
 				    }).then(function(){
-					location.href="./paySuccess.do?paynum="+rsp.imp_uid+"&finalAmount="+rsp.paid_amount+"&plusMile="+plusMile;
+					location.href="./paySuccess.do?paynum="+rsp.imp_uid+"&finalAmount="+rsp.paid_amount+"&plusMile="+plusMile+"&claNum=CLA002";
 				})
 			    	//[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
 			    	jQuery.ajax({

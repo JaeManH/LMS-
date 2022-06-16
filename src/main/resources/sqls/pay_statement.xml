@@ -242,6 +242,49 @@
 	
 	<!-- 수강자로 등록 -->
 	<update id="updateClaPeople" parameterType="java.util.Map">
-		UPDATE CLASS_PEOPLE SET CPE_STATUS ='N' WHERE CPE_MEM_ID=#{tra_id}
+		UPDATE CLASS_PEOPLE SET CPE_STATUS ='Y' WHERE CPE_MEM_ID=#{tra_id} AND CPE_CLA_NUM =#{claNum}
 	</update>
+	
+	<!-- 강사에게 수강료 지급 -->
+	<insert id="insertSalary" parameterType="java.util.Map">
+		INSERT INTO SALARY
+		(SAL_SEQ,
+		SAL_CLA_NUM,
+		SAL_TOTALPRICE,
+		SAL_INS_ID,
+		SAL_BANKNUM,
+		SAL_BANK,
+		SAL_PRICE,
+		SAL_STATUS,
+		SAL_DATE)
+		VALUES(SALARY_SEQ.NEXTVAL,
+		#{sal_cla_num},
+		(SELECT CLA_PRICE FROM CLASS WHERE CLA_NUMBER = #{sal_cla_num})*(SELECT COUNT(*) FROM CLASS_PEOPLE WHERE CPE_CLA_NUM =#{sal_cla_num} AND CPE_STATUS='Y'),
+		#{sal_ins_id},
+		'729210011527',
+		'경남',
+		(((SELECT CLA_PRICE FROM CLASS WHERE CLA_NUMBER = #{sal_cla_num})*(SELECT COUNT(*) FROM CLASS_PEOPLE WHERE CPE_CLA_NUM =#{sal_cla_num} AND CPE_STATUS='Y'))/(SELECT COUNT(*) FROM VOTE WHERE VOT_CLA_NUM =#{sal_cla_num}))*0.8,
+		'지급완료',
+		SYSDATE)
+	</insert>
+	
+	<!-- 강사 아이디 가져오기 -->
+	<select id="getIns" resultType="String" parameterType="java.util.Map">
+		SELECT VOT_INS_ID FROM VOTE WHERE VOT_CLA_NUM =#{sal_cla_num}
+	</select>
+	
+	<!-- 수강료 지급내역 가져오기 -->
+	<select id="getSalary" resultType="SalaryVo">
+		SELECT SAL_SEQ,
+		SAL_CLA_NUM,
+		SAL_TOTALPRICE, 
+		SAL_INS_ID, 
+		SAL_BANKNUM, 
+		SAL_BANK, 
+		SAL_PRICE, 
+		SAL_STATUS, 
+		SAL_DATE
+		FROM SALARY
+	</select>
+	
 </mapper>
