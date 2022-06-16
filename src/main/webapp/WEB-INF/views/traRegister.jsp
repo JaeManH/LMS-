@@ -185,7 +185,7 @@ LMS에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화(LMS
                 <label>전화번호</label>
                   <div class="small-group">
                     <div class="input-group"><span class="input-group-text"><i class="icon-user"></i></span>
-                      <input class="phoneNumber form-control" type="text" name="phone" id="phone" maxlength='13' required="" onkeyup="keyup" placeholder="010-">
+                      <input class="phoneNumber form-control" type="text" name="phone" id="phone" maxlength='13' value="010" required="" onkeyup="keyup" placeholder="010-">
                     </div>
   					</div>
   					</div>
@@ -212,6 +212,7 @@ LMS에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화(LMS
                     <input class="form-control" type="email" id="email" name="email" required="" placeholder="Test@gmail.com">
                   </div>
                 </div>
+                <span class="check_font" id="email_check"></span>
   <div class="col-lg-12">
 
       <!--  end panel-body -->
@@ -325,7 +326,7 @@ $(".checkbox_group").on("click", ".normal", function() {
 	var pwJ = /^[A-Za-z0-9]{4,15}$/; 
 	// 이름정규식 한글 또는 영어 2~6
     var nameJ = /^[가-힣a-zA-Z]{2,6}$/;
-	// 이메일 검사 정규식
+	// 이메일 검사 정규식 특수문자 점(.) 하이픈(-) 언더바(_) 만 사용가능
 	var mailJ = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 	// 휴대폰 번호 정규식
 	var phoneJ = /^\d{3}-\d{3,4}-\d{4}$/;
@@ -433,6 +434,47 @@ $(".checkbox_group").on("click", ".normal", function() {
 		
 			$(this).val( $(this).val().replace(/[^0-9]/g, "").replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,"$1-$2-$3").replace("--", "-") ); 
 				
+			});
+		
+		
+		//아이디 중복확인 및 정규화
+		$("#email").blur(function() {
+			// id = "id_reg" / name = "userId"
+			var traEmail = $('#email').val();
+			console.log(traEmail);	
+			$.ajax({
+	            url : '${pageContext.request.contextPath}/user/CheckTraEmail.do?email='+ traEmail,
+//	 			data:'id='+traId,
+				type : 'get',
+				success : function(data) {
+					
+			console.log("이메일 : 1 = 중복o / 0 = 중복x : "+ data);							
+					if (data == 1) {
+							// 1 : 아이디가 중복되는 문구
+							$("#email_check").text("사용중인 이메일입니다.");
+							$("#email_check").css("color", "red");
+							$("#reg_submit").attr("disabled", true);
+						} else {
+							//0인경우
+							if(mailJ.test(traEmail)){
+								$("#email_check").text('사용 가능합니다.');
+								$("#reg_submit").attr("disabled", false);
+								$("#email_check").css("color", "blue");
+							}else if(traEmail == ""){
+								
+								$('#email_check').text('이메일를 입력해주세요 :)');
+								$('#email_check').css('color', 'red');
+								$("#reg_submit").attr("disabled", true);				
+							}else{
+								$('#email_check').text("이메일 형식에 맞게 입력해주세요 :)");
+								$('#email_check').css('color', 'red');
+								$("#reg_submit").attr("disabled", true);
+							}						
+						}
+					}, error : function() {
+							console.log("실패");
+					}
+				});
 			});
 			
 </script>

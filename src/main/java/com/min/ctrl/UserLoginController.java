@@ -43,7 +43,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.min.vo.FileVo;
 import com.min.service.IMemberService;
-
+import com.min.utils.MailUtil;
 import com.min.vo.MemberVo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -156,15 +156,19 @@ public class UserLoginController {
 	}
 	
 	//일반회원 개인정보 수정
-	@RequestMapping(value = "/editUser.do", method = RequestMethod.POST)
-	public String editUserProfile(@RequestParam Map<String, Object> map, Model model,Authentication user) {
+	@RequestMapping(value = "/editUser.do", method = {RequestMethod.POST,RequestMethod.GET})
+	public String  editUserProfile(@RequestParam Map<String, Object> map, Model model,Authentication user) {
 		MemberVo mvo = (MemberVo) user.getDetails();
 		map.put("id", mvo.getId());
 		
 		log.info("개인정보 수정",mvo);
 		System.out.println(map);
-		service.updateTra(map);
-		return "redirect:/user";
+	   service.updateTra(map);
+		
+		
+		
+		return "redirect:/user/logout.do";
+	
 	}
 	
 	
@@ -194,28 +198,62 @@ public class UserLoginController {
 			return rMap;
 		}
 		
+		/* 비밀번호 찾기 */
+		@RequestMapping(value = "/findTraPwView", method = RequestMethod.GET)
+		public String findTraPw(){
+			
+			return "findTraPw";
+		}
+
+		@GetMapping(value = "/findTraPw.do",produces = {MediaType.APPLICATION_JSON_VALUE})
+		public @ResponseBody String findPw (@RequestParam Map<String, Object> map, Model model) throws Exception {
+			
+			String result=null;
+			System.out.println(map);
+			//회원정보 불러오기
+			MemberVo vo1 = service.findTraPw(map);
+			System.out.println(vo1);
+			
+			//가입된 이메일이 존재한다면 이메일 전송
+			if(vo1!=null) {
+				
+				//임시 비밀번호 생성(UUID이용)
+				String tempPw=UUID.randomUUID().toString().replace("-", "");//-를 제거
+				tempPw = tempPw.substring(0,10);//tempPw를 앞에서부터 10자리 잘라줌
+				
+				vo1.setPw(tempPw);//임시 비밀번호 담기
+				MailUtil mail=new MailUtil(); //메일 전송하기
+				mail.sendEmail(vo1);
+				
+				String securePw = password.encode(tempPw);//회원 비밀번호를 암호화하면 vo객체에 다시 저장
+				map.put("pw", securePw);
+				service.updateTraPw(map);
+				result="true";
+
+			}else {
+				result="false";
+			}
+			return result;
+		}
 		
-//		@RequestMapping(value = "/CheckTraId.do", method = RequestMethod.POST)
-//		public @ResponseBody  Map<String, String> CheckTraId (@RequestParam Map<String, Object> map, Model model) {
-//			Map<String, String> rMap = new HashMap<String, String>();
-//			log.info("********* Welcome Member_Controller CheckTraId! : {} ", map);
-//			int n = service.CheckTraId(map);
-//			
-//			log.info("********* Welcome! Member_Controller CheckTraId : {}", n);
-//			if(n == 1) {
-//				rMap.put("isc", "중복");
-//			}else {
-//				rMap.put("isc", "가능");
-//				
-//			}
-//			return rMap;
-//		}
+	
 		
+
+		//아이디 중복 체크
 		@RequestMapping(value = "/CheckTraId.do", method = RequestMethod.GET)
 		@ResponseBody
 		public int idCheck(@RequestParam("id") String id) {
-			log.info("*id : ", id);
+			log.info("일반회원 아이디 중복체크 : ", id);
+			
 			return service.checkTraId(id);
+		}
+		//이메일 중복 체크
+		@RequestMapping(value = "/CheckTraEmail.do", method = RequestMethod.GET)
+		@ResponseBody
+		public int emailCheck(@RequestParam("email") String email) {
+			log.info("일반회원 이메일 중복체크 : ", email);
+			
+			return service.checkTraEmail(email);
 		}
 
 	

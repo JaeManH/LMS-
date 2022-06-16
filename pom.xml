@@ -283,7 +283,12 @@
    				 <artifactId>thumbnailator</artifactId>
    				 <version>0.4.17</version>
 			</dependency>
-			
+			<!-- 메일 api -->
+       <dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-email</artifactId>
+			<version>1.5</version>
+		</dependency>
 			
       <!-- transaction 처리 -->
 		<dependency>
