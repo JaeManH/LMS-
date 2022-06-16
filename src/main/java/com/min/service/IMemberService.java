@@ -30,6 +30,12 @@ public interface IMemberService{
 		public int updateProfile(Map<String, Object> map);
 		//일반회원 아이디 중복 체크
 		public int checkTraId(String id);
+		//일반회원 이메일 중복 체크
+		public int checkTraEmail(String id);
+		//일반회원 비밀번호 찾기
+		public MemberVo findTraPw(Map<String, Object> map);
+		public int updateTraPw(Map<String, Object> map);
+		
 		
 		//*********강사 **********
 		//시큐리티 강사 로그인
@@ -50,6 +56,11 @@ public interface IMemberService{
 		public int insertCar(Map<String, Object> map);
 		//강사 경력 등록
 		public int updateCar(Map<String, Object> map);
+		//강사 이메일 중복 체크
+		public int checkInsEmail(String id);
+		//일반회원 비밀번호 찾기
+		public MemberVo findInsPw(Map<String, Object> map);
+		public int updateInsPw(Map<String, Object> map);
 		
 		
 		//페이징처리

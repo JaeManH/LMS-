@@ -213,6 +213,8 @@ LMS에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화(LMS
                     <input class="form-control" type="email" id="email" name="email" required="" placeholder="Test@gmail.com">
                   </div>
                 </div>
+                    <span class="check_font" id="email_check"></span>
+                  
                 <div class="col-sm-6 col-md-6">
                           <div class="mb-3">
                 <label>은행</label>
@@ -240,6 +242,7 @@ LMS에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화(LMS
                     </div>
                      <span class="check_font" id="phone_check"></span>
                   </div>
+                              
   <div class="col-lg-12">
 
       <!--  end panel-body -->
@@ -440,7 +443,46 @@ LMS에서 제공하는 이벤트/혜택 등 다양한 정보를 휴대전화(LMS
 				
 			});
 		
-		
+		//아이디 중복확인 및 정규화
+		$("#email").blur(function() {
+			// id = "id_reg" / name = "userId"
+			var traEmail = $('#email').val();
+			console.log(traEmail);	
+			$.ajax({
+	            url : '${pageContext.request.contextPath}/ins/CheckInsEmail.do?email='+ traEmail,
+//	 			data:'id='+traId,
+				type : 'get',
+				success : function(data) {
+					
+			console.log("이메일 : 1 = 중복o / 0 = 중복x : "+ data);							
+					if (data == 1) {
+							// 1 : 아이디가 중복되는 문구
+							$("#email_check").text("사용중인 이메일입니다.");
+							$("#email_check").css("color", "red");
+							$("#reg_submit").attr("disabled", true);
+						} else {
+							//0인경우
+							if(mailJ.test(traEmail)){
+								$("#email_check").text('사용 가능합니다.');
+								$("#reg_submit").attr("disabled", false);
+								$("#email_check").css("color", "blue");
+							}else if(traEmail == ""){
+								
+								$('#email_check').text('이메일를 입력해주세요 :)');
+								$('#email_check').css('color', 'red');
+								$("#reg_submit").attr("disabled", true);				
+							}else{
+								$('#email_check').text("이메일 형식에 맞게 입력해주세요 :)");
+								$('#email_check').css('color', 'red');
+								$("#reg_submit").attr("disabled", true);
+							}						
+						}
+					}, error : function() {
+							console.log("실패");
+					}
+				});
+			});
+			
 		
 </script>
 
