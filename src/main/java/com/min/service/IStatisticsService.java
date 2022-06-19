@@ -29,4 +29,7 @@ public interface IStatisticsService {
 
     public void scoreCron();
 
+    public List<String> selectSubejctToCode(String cla_num);
+
+    public List<ClassVo> selectClassIN(List<String> list);
 }

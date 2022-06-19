@@ -1,7 +1,10 @@
 package com.min.ctrl;
 
+import java.lang.reflect.Member;
 import java.util.*;
 
+import com.min.service.IClassService;
+import com.min.service.IClassSubjectService;
 import com.min.service.IStatisticsService;
 import com.min.service.SubjectService;
 import com.min.vo.ClassVo;
@@ -32,6 +35,9 @@ public class StatisticsController {
     @Autowired
     private IStatisticsService service;
 
+    @Autowired
+    private IClassService classService;
+
     //선호 조사시 과목코드를 가져오는 메소드
     @RequestMapping(value = {"user/getSubjectList.do",}, method = RequestMethod.GET, produces = "application/text; charset=utf-8")
     @ResponseBody
@@ -52,8 +58,11 @@ public class StatisticsController {
             String id = (String) authentication.getPrincipal();
             Map<String, Object> map = new HashMap<String, Object>();
             JSONObject obj = new JSONObject();
-
-            obj.put("subjects", Arrays.toString(subjects));
+            JSONArray jsonArray = new JSONArray();
+            for(int i = 0;i<subjects.length;i++){
+                jsonArray.add(subjects[i].toString());
+            }
+            obj.put("subject", jsonArray);
             String[] splitTime = time.split("-");
             obj.put("more_time", splitTime[0]);
             obj.put("less_time", splitTime[1]);
@@ -65,7 +74,7 @@ public class StatisticsController {
 
             service.updatePrefer(map);
             //TODO 다음페이지로 넘기기
-            return "redirect:/main.do";
+            return "redirect:/user/main.do";
         }
     }
 
@@ -74,11 +83,16 @@ public class StatisticsController {
     @ResponseBody
     public String clickLike(String claid, Authentication authentication) throws ParseException {
         String userid;
+        JSONArray myArr;
         MemberVo vo = (MemberVo) authentication.getDetails();
         userid = authentication.getPrincipal().toString();
         String myLikelist = vo.getLike();
         JSONParser parser = new JSONParser();
-        JSONArray myArr = (JSONArray) parser.parse(myLikelist);
+        if(myLikelist!=null){
+         myArr = (JSONArray) parser.parse(myLikelist);
+        }else{
+            myArr = new JSONArray();
+        }
         int result = service.updateLike(userid, claid);
         logger.info(userid);
         System.out.println(result);
@@ -154,12 +168,13 @@ public class StatisticsController {
             map.put("score", jsonObject.toJSONString());
             service.updateSubjectScore(map);
 
-            return "redirect:/main.do";
+            return "redirect:/user/main.do";
         }
     }
 
     @RequestMapping(value = "/subjectChart.do", method = RequestMethod.GET)
     public String subjectChart(String sub_num, Model model) {
+        logger.info("StatisticsController subjectChart {}",sub_num);
         model.addAttribute("sub_num", sub_num);
         return "subjectChart";
     }
@@ -167,6 +182,7 @@ public class StatisticsController {
     @RequestMapping(value = "/getSubjectChart.do", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String getSubjectChart(String sub_num) throws ParseException {
+        logger.info("StatisticsController getSubjectChart  {}", sub_num);
         String score = service.selectSubjectScore(sub_num);
         JSONParser parser = new JSONParser();
         JSONObject scoreObject = (JSONObject) parser.parse(score);
@@ -180,5 +196,26 @@ public class StatisticsController {
         result.put("immersionTotal", (Integer.parseInt(scoreObject.get("immersionTotal").toString()) * 20) / scoreSize);
 
         return result.toJSONString();
+    }
+
+    @RequestMapping(value = "/user/recommandClass.do", method = RequestMethod.GET)
+    public String recommandClass(Authentication authentication,Model model) throws ParseException {
+        List<ClassVo> classVoList = new ArrayList<ClassVo>();
+        MemberVo memberVo = (MemberVo) authentication.getDetails();
+        String prefer = memberVo.getPrefer();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonPrefer = (JSONObject) parser.parse(prefer);
+        logger.info("StatisticsController recommandClass {}",prefer);
+        JSONArray jsonArray = (JSONArray)jsonPrefer.get("subject");
+        HashSet<ClassVo> claSet = new HashSet<ClassVo>();
+        for(int i = 0; i<jsonArray.size();i++){
+            List<String> subjectNumList = service.selectSubejctToCode(jsonArray.get(i).toString());
+            claSet.addAll(service.selectClassIN(subjectNumList))  ;
+        }
+        classVoList.addAll(claSet);
+        System.out.println(classVoList);
+        model.addAttribute("lists",classVoList);
+
+        return "recommandClass";
     }
 }

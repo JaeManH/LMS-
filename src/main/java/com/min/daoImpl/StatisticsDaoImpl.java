@@ -83,6 +83,14 @@ public class StatisticsDaoImpl implements IStatisticsDao {
         return session.selectOne(NS+"selectSubjectTitle",id);
     }
 
+    @Override
+    public List<String> selectSubejctToCode(String cla_num) {
+        return session.selectList(NS+"selectSubejctToCode",cla_num);
+    }
 
+    @Override
+    public List<ClassVo> selectClassIN(List<String> list) {
+        return session.selectList(NS+"selectClassIN",list);
+    }
 }
 
