@@ -157,5 +157,13 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
     }
 
+    @Override
+    public List<String> selectSubejctToCode(String cla_num) {
+        return dao.selectSubejctToCode(cla_num);
+    }
 
+    @Override
+    public List<ClassVo> selectClassIN(List<String> list) {
+        return dao.selectClassIN(list);
+    }
 }

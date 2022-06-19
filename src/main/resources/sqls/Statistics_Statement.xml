@@ -108,6 +108,20 @@
         WHERE SUB_NUM = #{id}
     </select>
 
+<!--  과목 코드로 과정에 포함된 과목 찾기  -->
+    <select id="selectSubejctToCode" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT CSU_CLA_NUM FROM CLASS_SUBJECT WHERE CSU_SUB_NUM IN ((
+            SELECT SUB_NUM FROM SUBJECT WHERE SUB_COD_CODE = #{cla_num}))
+    </select>
+
+<!--  과정 다중 검색  -->
+    <select id="selectClassIN" resultType="ClassVo">
+        SELECT CLA_NUM, CLA_TITLE, CLA_CONTENT, CLA_MAXPEO, CLA_PRICE, CLA_DAILYTIME, CLA_STARTDATE, CLA_TOTALTIME, JSON_QUERY(CLA_LIKE,'$' RETURNING VARCHAR2),
+               CLA_STATUS, CLA_REGDATE, CLA_ENDDATE, CLA_ENDRECRUIT, CLA_ENDVOTE FROM CLASS WHERE CLA_NUM IN
+                                  <foreach collection="list" open="(" close=")" separator="," item="item" index="index">
+                                      #{item}
+                                  </foreach>
+    </select>
     <!--  메인 화면 최근 등록된 과정 쿼리  -->
 <!--    <select id="">-->
 <!--        SELECT * FROM (-->

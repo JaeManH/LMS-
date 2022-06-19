@@ -1,65 +1,28 @@
-<%@ page import="java.util.Random" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
-<title>Insert title here</title>
-<%@ include file="./admin_header.jsp" %>
+<head>
+    <title>추천 과정</title>
+    <link rel="stylesheet" href="../resources/css/statistics/tag.css">
+    <%@ include file="./header.jsp" %>
+</head>
+<%--다른 폴더 안에 들어가면 인클루드 된 파일 경로 앞에 .을 붙여야함--%>
 <body>
-<!-- Page Sidebar Ends-->
+
 <div class="page-body">
     <div class="container-fluid">
         <div class="page-header">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3>모든 과정</h3>
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="./adminMain.do">Home</a></li>
-                        <li class="breadcrumb-item active">모든 과정</li>
-                    </ol>
+                    <h3>추천 과정</h3>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Container-fluid starts-->
-    <div class="container-fluid">
-        <div class="row project-cards">
-            <div class="col-md-12 project-list">
-                <div class="card">
-                    <div class="row">
-                        <div class="col-md-6 p-0">
-                            <ul class="nav nav-tabs border-tab" id="top-tab" role="tablist">
-                                <li class="nav-item"><a class="nav-link active" id="top-home-tab" data-bs-toggle="tab"
-                                                        href="#top-home" role="tab" aria-controls="top-home"
-                                                        aria-selected="true" style="font-size: 13px;"><i
-                                        data-feather="target"></i>모든 과정</a></li>
-                                <li class="nav-item"><a class="nav-link active" id="top-home-tab" data-bs-toggle="tab"
-                                                        href="#top-profile" role="tab" aria-controls="top-home"
-                                                        aria-selected="true" style="font-size: 13px;"><i
-                                        data-feather="info"></i>모집중</a></li>
-                                <li class="nav-item"><a class="nav-link" id="profile-top-tab" data-bs-toggle="tab"
-                                                        href="#top-profile" role="tab" aria-controls="top-profile"
-                                                        aria-selected="false" style="font-size: 13px;"><i
-                                        data-feather="info"></i>투표중</a></li>
-                                <li class="nav-item"><a class="nav-link" id="profile-top-tab" data-bs-toggle="tab"
-                                                        href="#top-profile" role="tab" aria-controls="top-profile"
-                                                        aria-selected="false" style="font-size: 13px;"><i
-                                        data-feather="info"></i>수강중</a></li>
-                                <li class="nav-item"><a class="nav-link" id="contact-top-tab" data-bs-toggle="tab"
-                                                        href="#top-contact" role="tab" aria-controls="top-contact"
-                                                        aria-selected="false" style="font-size: 13px;"><i
-                                        data-feather="check-circle"></i>종강</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6 p-0">
-                            <div class="form-group mb-0 me-0"></div>
-                            <a class="btn btn-primary" href="./classInsertForm.do"> <i data-feather="plus-square"> </i>과정
-                                등록하기</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-12">
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="row">
+
                 <div class="card">
                     <div class="card-body">
                         <div class="tab-content" id="top-tabContent">
@@ -138,11 +101,21 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
+        <!-- Container-fluid Ends-->
     </div>
-    <!-- Container-fluid Ends-->
+
 </div>
+</div>
+
+
+<%@include file="./footer.jsp" %>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+<script src="../resources/js/statistics/prefer.js"></script>
+
+
 </body>
-<%@include file="./admin_footer.jsp" %>
 </html>

@@ -198,6 +198,15 @@
                         <div class="card">
                           <div class="card-header">
                             <h5 class="p-0">
+                              <a href="./recommandClass.do">추천과정</a>
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xl-12 col-lg-6 col-md-12 col-sm-6">
+                        <div class="card">
+                          <div class="card-header">
+                            <h5 class="p-0">
                               <button class="btn btn-link ps-0" data-bs-toggle="collapse" data-bs-target="#collapseicon13" aria-expanded="true" aria-controls="collapseicon13">Friends</button>
                             </h5>
                           </div>

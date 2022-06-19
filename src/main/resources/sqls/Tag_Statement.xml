@@ -22,18 +22,18 @@
         SET TAG_IDS = #{id}
         WHERE TAG_NAME = #{name}
     </update>
-    
+
     <!-- 기존에 없는 태그를 추가한다 -->
     <insert id="insertTagNew" parameterType="java.lang.String">
-        INSERT INTO TAG(TAG_NAME,TAG_IDS)
-        VALUES (#{tag},JSON_OBJECT('subject' :'[]','class' : '[]'))
+        INSERT INTO TAG(TAG_NAME, TAG_IDS)
+        VALUES (#{tag}, '{"subject":[],"class":[]}')
     </insert>
-    
+
     <!--  과목에 있는 태그를 조회한다.  -->
     <select id="selectSubjectTag" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT JSON_QUERY(SUB_TAG, '$' RETURNING VARCHAR2)
         FROM SUBJECT
-        WHERE SUB_NUM = #{sub_num} 
+        WHERE SUB_NUM = #{sub_num}
     </select>
     <!--  태그 이름으로 태그 검색  -->
     <select id="selectTagJson" parameterType="java.lang.String" resultType="java.lang.String">
@@ -42,8 +42,17 @@
         WHERE TAG_NAME = #{name}
     </select>
 
-
+<!--과목 코드에 있는 기본 태그들을 가져온다.-->
     <select id="selectTagSubjectCode" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT COD_TAG FROM SUB_CODE WHERE COD_CODE = #{code}
+        SELECT COD_TAG
+        FROM SUB_CODE
+        WHERE COD_CODE = #{code}
+    </select>
+<!--과정안의 과목들의 태그를 가져온다 -->
+    <select id="selectTagClassSubject" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT SUB_TAG
+        FROM CLASS_SUBJECT
+                 JOIN SUBJECT S on S.SUB_NUM = CLASS_SUBJECT.CSU_SUB_NUM
+        WHERE CSU_CLA_NUM = #{cla_num}
     </select>
 </mapper>
